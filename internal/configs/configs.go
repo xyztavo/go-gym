@@ -25,3 +25,19 @@ func GetDBConnStr() string {
 func GetJWTSecret() string {
 	return os.Getenv("JWT_SECRET")
 }
+
+type AdminUser struct {
+	Name     string
+	Email    string
+	Password string
+}
+
+func GetAdminInfo() *AdminUser {
+	adminUser := new(AdminUser)
+
+	adminUser.Name = os.Getenv("ADMIN_NAME")
+	adminUser.Email = os.Getenv("ADMIN_EMAIL")
+	adminUser.Password = os.Getenv("ADMIN_PASSWORD")
+
+	return adminUser
+}

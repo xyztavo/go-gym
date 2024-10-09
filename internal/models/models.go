@@ -6,7 +6,11 @@ type User struct {
 	Id       string `json:"id"`
 	Name     string `json:"name"`
 	Email    string `json:"email"`
+	Role     string `json:"role"`
 	Password string `json:"password"`
+}
+type SetUserGymAdmin struct {
+	Id string `json:"id" validate:"required"`
 }
 
 type CreateUser struct {

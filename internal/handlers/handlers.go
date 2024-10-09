@@ -10,3 +10,9 @@ func HelloWorld(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(m)
 	w.Write(b)
 }
+
+func TestAuth(w http.ResponseWriter, r *http.Request) {
+	m := map[string]string{"message": "authenticated!"}
+	b, _ := json.Marshal(m)
+	w.Write(b)
+}
