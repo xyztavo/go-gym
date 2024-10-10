@@ -5,4 +5,7 @@
 - [x] admins can set regular users to be gym admins
 - [x] admins and gymadmins can create exercises 
 - [x] admins and gymadmins can create routines 
-- [ ] admins and gymadmins can add exercises to routines
+- [x] admins and gymadmins can add exercises to routines
+- [ ] create gym table (id, name, description, location, number)
+- [ ] create plans table (id, name, description, price, duration)
+- [ ] add gym_id, createdAt, plan, lastPayment, cancelsAt,  row to users
