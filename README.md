@@ -4,4 +4,5 @@
 - [x] create admin, gym-admin user
 - [x] admins can set regular users to be gym admins
 - [x] admins and gymadmins can create exercises 
-- [ ] admins and gymadmins can create routines 
+- [x] admins and gymadmins can create routines 
+- [ ] admins and gymadmins can add exercises to routines

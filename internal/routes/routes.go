@@ -31,4 +31,5 @@ func AdminRouter(r chi.Router) {
 func AdminOrGymAdminRouter(r chi.Router) {
 	r.Use(middlewares.AdminOrGymAdminAuthMiddleware)
 	r.Post("/exercises", handlers.CreateExercise)
+	r.Post("/routines", handlers.CreateRoutine)
 }
