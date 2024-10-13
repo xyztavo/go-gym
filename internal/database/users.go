@@ -19,14 +19,14 @@ func CreateUser(user *models.CreateUser) (id string, err error) {
 }
 
 func GetUserByEmail(email string) (user models.User, err error) {
-	if err := db.QueryRow("SELECT * FROM users WHERE email = $1", email).Scan(&user.Id, &user.Name, &user.Email, &user.Role, &user.Password); err != nil {
+	if err := db.QueryRow("SELECT * FROM users WHERE email = $1", email).Scan(&user.Id, &user.GymId, &user.Name, &user.Email, &user.Role, &user.Password, &user.PlanId, &user.LastPayment, &user.CreatedAt); err != nil {
 		return user, err
 	}
 	return user, nil
 }
 
 func GetUserById(id string) (user models.User, err error) {
-	if err := db.QueryRow("SELECT * FROM users WHERE id = $1", id).Scan(&user.Id, &user.Name, &user.Email, &user.Role, &user.Password); err != nil {
+	if err := db.QueryRow("SELECT * FROM users WHERE id = $1", id).Scan(&user.Id, &user.GymId, &user.Name, &user.Email, &user.Role, &user.Password, &user.PlanId, &user.LastPayment, &user.CreatedAt); err != nil {
 		return user, err
 	}
 	return user, nil
@@ -42,4 +42,16 @@ func SetUserGymAdmin(id string) error {
 		return err
 	}
 	return nil
+}
+
+func GetUserGym(userId string) (gym models.Gym, err error) {
+	user, err := GetUserById(userId)
+	if err != nil {
+		return gym, err
+	}
+	gym, err = GetGymById(*user.GymId)
+	if err != nil {
+		return gym, err
+	}
+	return gym, nil
 }

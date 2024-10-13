@@ -11,15 +11,15 @@ type UserJwt struct {
 	jwt.RegisteredClaims
 }
 type User struct {
-	Id          string    `json:"id"`
-	GymId       string    `json:"gymId"`
-	Name        string    `json:"name"`
-	Email       string    `json:"email"`
-	Role        string    `json:"role"`
-	Password    string    `json:"password"`
-	PlanId      string    `json:"planId"`
-	LastPayment time.Time `json:"lastPayment"`
-	CreatedAt   time.Time `json:"createdAt"`
+	Id          string     `json:"id"`
+	GymId       *string    `json:"gymId"`
+	Name        string     `json:"name"`
+	Email       string     `json:"email"`
+	Role        string     `json:"role"`
+	Password    string     `json:"password"`
+	PlanId      *string    `json:"planId"`
+	LastPayment *time.Time `json:"lastPayment"`
+	CreatedAt   time.Time  `json:"createdAt"`
 }
 
 type SetUserGymAdmin struct {

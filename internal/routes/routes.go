@@ -14,12 +14,14 @@ func SetupRoutes() *chi.Mux {
 	r.Group(AdminRouter)
 	r.Group(AdminOrGymAdminRouter)
 	r.Group(AuthRouter)
+	r.Group(GymAdminRouter)
 	return r
 }
 
 func AuthRouter(r chi.Router) {
 	r.Use(middlewares.AuthMiddleware)
 	r.Get("/testauth", handlers.TestAuth)
+	r.Get("/user/gym", handlers.GetUserGym)
 }
 
 func AdminRouter(r chi.Router) {
@@ -33,4 +35,9 @@ func AdminOrGymAdminRouter(r chi.Router) {
 	r.Post("/exercises", handlers.CreateExercise)
 	r.Post("/routines", handlers.CreateRoutine)
 	r.Post("/routines/exercises", handlers.CreateExerciseRoutine)
+}
+
+func GymAdminRouter(r chi.Router) {
+	r.Use(middlewares.GymAdminAuthMiddleware)
+	r.Post("/gym", handlers.CreateGym)
 }

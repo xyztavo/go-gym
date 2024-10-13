@@ -26,6 +26,16 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(m)
 	w.Write(b)
 }
+func GetUserGym(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
+	gym, err := database.GetUserGym(idFromToken)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	b, _ := json.Marshal(gym)
+	w.Write(b)
+}
 
 func SetUserGymAdmin(w http.ResponseWriter, r *http.Request) {
 	setUserGymAdmin := new(models.SetUserGymAdmin)

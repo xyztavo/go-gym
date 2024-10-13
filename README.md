@@ -9,5 +9,6 @@
 - [x] create gym table (id, name, description, location, number)
 - [x] create plans table (id, name, description, price, duration)
 - [x] add gym_id, createdAt, plan, lastPayment, cancelsAt, row to users
-- [ ] gymAdmins can create gym 
+- [x] gymAdmins can create gym 
+- [ ] gymAdmins can set users to be from its gym 
 - [ ] gymAdmins can create plans  
