@@ -26,13 +26,37 @@ func Migrate() error {
 	HashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
 	// Migrate tables
 	_, err := db.Exec(`
+	CREATE TABLE IF NOT EXISTS gyms (
+	id VARCHAR(40) PRIMARY KEY,
+	admin_id VARCHAR(40) UNIQUE NOT NULL,
+	name VARCHAR(40) UNIQUE NOT NULL,
+	description VARCHAR(40) NOT NULL,
+	location VARCHAR(40) NOT NULL,
+	number VARCHAR(40) NOT NULL
+	);
+	CREATE TABLE IF NOT EXISTS plans (
+	id VARCHAR(40) PRIMARY KEY,
+	gym_id VARCHAR(40) NOT NULL,
+	name VARCHAR(40) UNIQUE NOT NULL,
+	description VARCHAR(40) NOT NULL,
+	price DOUBLE PRECISION NOT NULL,
+	duration INT NOT NULL,
+	FOREIGN KEY (gym_id) REFERENCES gyms(id)
+	);
 	CREATE TABLE IF NOT EXISTS users (
 	id VARCHAR(40) PRIMARY KEY,
+	gym_id VARCHAR(40),
 	name VARCHAR(40) NOT NULL,
 	email VARCHAR(40) UNIQUE NOT NULL, 
 	role VARCHAR(40) NOT NULL,
-	password VARCHAR(200) NOT NULL
+	password VARCHAR(200) NOT NULL,
+	plan_id VARCHAR(40),
+	last_payment TIMESTAMP,
+	created_at TIMESTAMP DEFAULT NOW(),
+	FOREIGN KEY (gym_id) REFERENCES gyms(id),
+	FOREIGN KEY (plan_id) REFERENCES plans(id)
 	);
+	ALTER TABLE gyms ADD FOREIGN KEY (admin_id) REFERENCES users(id);
 	CREATE TABLE IF NOT EXISTS exercises (
 	id VARCHAR(40) PRIMARY KEY,
 	name VARCHAR(40) UNIQUE NOT NULL,

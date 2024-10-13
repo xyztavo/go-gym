@@ -1,17 +1,25 @@
 package models
 
-import "github.com/golang-jwt/jwt/v5"
+import (
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+)
 
 type UserJwt struct {
 	Id string `json:"id"`
 	jwt.RegisteredClaims
 }
 type User struct {
-	Id       string `json:"id"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Role     string `json:"role"`
-	Password string `json:"password"`
+	Id          string    `json:"id"`
+	GymId       string    `json:"gymId"`
+	Name        string    `json:"name"`
+	Email       string    `json:"email"`
+	Role        string    `json:"role"`
+	Password    string    `json:"password"`
+	PlanId      string    `json:"planId"`
+	LastPayment time.Time `json:"lastPayment"`
+	CreatedAt   time.Time `json:"createdAt"`
 }
 
 type SetUserGymAdmin struct {
