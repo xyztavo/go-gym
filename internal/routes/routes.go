@@ -40,4 +40,5 @@ func AdminOrGymAdminRouter(r chi.Router) {
 func GymAdminRouter(r chi.Router) {
 	r.Use(middlewares.GymAdminAuthMiddleware)
 	r.Post("/gym", handlers.CreateGym)
+	r.Post("/gym/user", handlers.SetGymUser)
 }

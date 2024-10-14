@@ -1,8 +1,8 @@
 package models
 
 type Gym struct {
-	AdminId     string `json:"adminId"`
 	Id          string `json:"id"`
+	AdminId     string `json:"adminId"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Location    string `json:"location"`

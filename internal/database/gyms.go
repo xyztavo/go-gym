@@ -30,9 +30,25 @@ func CreateGym(userId string, createGym *models.CreateGym) (createdGymId string,
 }
 
 func GetGymById(gymId string) (gym models.Gym, err error) {
-	err = db.QueryRow("SELECT * FROM gyms WHERE id = $1", gymId).Scan(&gym.AdminId, &gym.Id, &gym.Name, &gym.Description, &gym.Location, &gym.Number)
+	err = db.QueryRow("SELECT * FROM gyms WHERE id = $1", gymId).Scan(&gym.Id, &gym.AdminId, &gym.Name, &gym.Description, &gym.Location, &gym.Number)
 	if err != nil {
 		return gym, err
 	}
 	return gym, nil
+}
+
+func SetGymUser(userId string, adminId string) (status int, err error) {
+	_, err = GetUserById(userId)
+	if err != nil {
+		return http.StatusNotFound, errors.New("cannot find user with id :" + userId)
+	}
+	gym, err := GetUserGym(adminId)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	_, err = db.Exec("UPDATE users SET gym_id = $1 WHERE id = $2", gym.Id, userId)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusOK, nil
 }

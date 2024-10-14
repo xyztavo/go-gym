@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/xyztavo/go-gym/internal/database"
@@ -27,5 +28,24 @@ func CreateGym(w http.ResponseWriter, r *http.Request) {
 	}
 	b, _ := json.Marshal(m)
 	w.WriteHeader(status)
+	w.Write(b)
+}
+
+func SetGymUser(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
+	setGymUser := new(models.SetGymUser)
+	if err := utils.BindAndValidate(r, setGymUser); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	statusCode, err := database.SetGymUser(setGymUser.Id, idFromToken)
+	if err != nil {
+		http.Error(w, err.Error(), statusCode)
+		return
+	}
+	m := map[string]string{"message": fmt.Sprintf("user with id: %v is now in your gym!", setGymUser.Id)}
+	b, _ := json.Marshal(m)
+	w.WriteHeader(statusCode)
 	w.Write(b)
 }
