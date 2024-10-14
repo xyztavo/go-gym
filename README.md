@@ -10,5 +10,11 @@
 - [x] create plans table (id, name, description, price, duration)
 - [x] add gym_id, createdAt, plan, lastPayment, cancelsAt, row to users
 - [x] gymAdmins can create gym 
-- [ ] gymAdmins can set users to be from its gym 
+- [x] gymAdmins can set users to be from its gym 
 - [ ] gymAdmins can create plans  
+- [ ] get /user/gym/plans 
+- [ ] gymAdmins can set the user plan and lastpayment
+- [ ] create check-in route
+- [ ] get routines 
+- [ ] get exercises
+- [ ] create gym routines table, gym admins can set gym routines
