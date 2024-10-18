@@ -11,8 +11,8 @@
 - [x] add gym_id, createdAt, plan, lastPayment, cancelsAt, row to users
 - [x] gymAdmins can create gym 
 - [x] gymAdmins can set users to be from its gym 
-- [ ] gymAdmins can create plans  
-- [ ] get /user/gym/plans 
+- [x] gymAdmins can create plans  
+- [x] get /user/gym/plans 
 - [ ] gymAdmins can set the user plan and lastpayment
 - [ ] create check-in route
 - [ ] get routines 

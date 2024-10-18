@@ -35,3 +35,19 @@ func CreatePlan(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Write(b)
 }
+
+func GetUserGymPlans(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
+	gym, err := database.GetUserGym(idFromToken)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	plans, err := database.GetGymPlans(gym.Id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	b, _ := json.Marshal(plans)
+	w.Write(b)
+}

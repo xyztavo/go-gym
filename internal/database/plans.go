@@ -13,3 +13,19 @@ func CreatePlan(gymId string, plan *models.CreatePlan) (createdPlanId string, er
 	}
 	return createdPlanId, nil
 }
+
+func GetGymPlans(gymId string) (plans []models.Plan, err error) {
+	rows, err := db.Query("SELECT * FROM plans WHERE gym_id = $1", gymId)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var plan models.Plan
+		rows.Scan(&plan.Id, &plan.GymId, &plan.Name, &plan.Description, &plan.Price, &plan.Duration)
+		plans = append(plans, plan)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return plans, nil
+}
