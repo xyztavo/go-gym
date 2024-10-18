@@ -51,3 +51,18 @@ func GetUserGymPlans(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(plans)
 	w.Write(b)
 }
+
+func SetUserPlan(w http.ResponseWriter, r *http.Request) {
+	userPlan := new(models.SetUserPlan)
+	if err := utils.BindAndValidate(r, userPlan); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if err := database.SetUserPlan(userPlan); err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	m := map[string]string{"message": "user plan updated with ease!"}
+	b, _ := json.Marshal(m)
+	w.Write(b)
+}

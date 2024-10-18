@@ -15,3 +15,8 @@ type CreatePlan struct {
 	Price       float32 `json:"price" validate:"required"`
 	Duration    int     `json:"duration" validate:"required"`
 }
+
+type SetUserPlan struct {
+	UserId string `json:"userId" validate:"required"`
+	PlanId string `json:"planId" validate:"required"`
+}

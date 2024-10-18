@@ -10,6 +10,7 @@ type UserJwt struct {
 	Id string `json:"id"`
 	jwt.RegisteredClaims
 }
+
 type User struct {
 	Id          string     `json:"id"`
 	GymId       *string    `json:"gymId"`

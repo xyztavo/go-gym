@@ -51,3 +51,19 @@ func SetUserGymAdmin(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(m)
 	w.Write(b)
 }
+
+func GetGymUsers(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
+	gym, err := database.GetUserGym(idFromToken)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	users, err := database.GetGymUsers(gym.Id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	b, _ := json.Marshal(users)
+	w.Write(b)
+}

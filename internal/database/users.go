@@ -55,3 +55,27 @@ func GetUserGym(userId string) (gym models.Gym, err error) {
 	}
 	return gym, nil
 }
+
+func SetUserPlan(setUserPlan *models.SetUserPlan) (err error) {
+	_, err = db.Exec("UPDATE users SET plan_id = $1, last_payment = current_timestamp WHERE id = $2", setUserPlan.PlanId, setUserPlan.UserId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetGymUsers(gymId string) (users []models.User, err error) {
+	rows, err := db.Query("SELECT * FROM users WHERE gym_id = $1", gymId)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var user models.User
+		rows.Scan(&user.Id, &user.GymId, &user.Name, &user.Email, &user.Role, &user.Password, &user.PlanId, &user.LastPayment, &user.CreatedAt)
+		users = append(users, user)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return users, nil
+}
