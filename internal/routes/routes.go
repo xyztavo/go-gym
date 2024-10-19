@@ -22,6 +22,7 @@ func AuthRouter(r chi.Router) {
 	r.Use(middlewares.AuthMiddleware)
 	r.Get("/testauth", handlers.TestAuth)
 	r.Get("/user/gym", handlers.GetUserGym)
+	r.Post("/user/gym/check-in", handlers.CheckIn)
 	r.Get("/user/gym/plans", handlers.GetUserGymPlans)
 }
 

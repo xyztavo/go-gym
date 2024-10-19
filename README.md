@@ -15,7 +15,7 @@
 - [x] get /user/gym/plans 
 - [x] gymAdmins can set the user plan and lastpayment
 - [x] gymAdmins can get users from its gym
-- [ ] create check-in route, users can verify if the plan is active and how many days until it expires
+- [x] create check-in route, users can verify if the plan is active and how many days until it expires
 - [ ] get routines 
 - [ ] get exercises
 - [ ] create gym routines table, gym admins can set gym routines

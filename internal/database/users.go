@@ -2,6 +2,9 @@ package database
 
 import (
 	"errors"
+	"fmt"
+	"math"
+	"time"
 
 	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/xyztavo/go-gym/internal/models"
@@ -78,4 +81,24 @@ func GetGymUsers(gymId string) (users []models.User, err error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+func CheckIn(userId string) (daysUntilPlanExpires float64, err error) {
+	user, err := GetUserById(userId)
+	if err != nil {
+		return 0, errors.New("could not find user")
+	}
+	var plan models.Plan
+	err = db.QueryRow("SELECT * FROM plans WHERE id = $1", *user.PlanId).Scan(&plan.Id, &plan.GymId, &plan.Name, &plan.Description, &plan.Price, &plan.Duration)
+	if err != nil {
+		return 0, err
+	}
+	dateUntilExpires := user.LastPayment.AddDate(0, 0, plan.Duration+1)
+	fmt.Println(dateUntilExpires)
+	timeComparison := dateUntilExpires.Compare(time.Now())
+	daysUntilExpiration := math.Floor(time.Since(dateUntilExpires).Hours() / 24)
+	if timeComparison < 0 {
+		return 0, errors.New(fmt.Sprintf("your plan has expired in %v days, please renew it", daysUntilExpiration))
+	}
+	return daysUntilExpiration, nil
 }
