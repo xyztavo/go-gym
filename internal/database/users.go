@@ -60,11 +60,33 @@ func GetUserGym(userId string) (gym models.Gym, err error) {
 }
 
 func SetUserPlan(setUserPlan *models.SetUserPlan) (err error) {
-	_, err = db.Exec("UPDATE users SET plan_id = $1, last_payment = current_timestamp WHERE id = $2", setUserPlan.PlanId, setUserPlan.UserId)
+	user, err := GetUserById(setUserPlan.UserId)
 	if err != nil {
 		return err
 	}
-	return nil
+	// if user already has paid
+	if user.LastPayment != nil {
+		var plan models.Plan
+		err = db.QueryRow("SELECT * FROM plans WHERE id = $1", *user.PlanId).Scan(&plan.Id, &plan.GymId, &plan.Name, &plan.Description, &plan.Price, &plan.Duration)
+		if err != nil {
+			return err
+		}
+		// get date until expiration
+		dateUntilExpires := user.LastPayment.AddDate(0, 0, plan.Duration+1)
+		fmt.Println(dateUntilExpires)
+		// set last payment the exact date that it will expire
+		_, err = db.Exec("UPDATE users SET plan_id = $1, last_payment = $2 WHERE id = $3", setUserPlan.PlanId, dateUntilExpires, setUserPlan.UserId)
+		if err != nil {
+			return err
+		}
+		return nil
+	} else {
+		_, err = db.Exec("UPDATE users SET plan_id = $1, last_payment = current_timestamp WHERE id = $2", setUserPlan.PlanId, setUserPlan.UserId)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
 }
 
 func GetGymUsers(gymId string) (users []models.User, err error) {
@@ -96,7 +118,7 @@ func CheckIn(userId string) (daysUntilPlanExpires float64, err error) {
 	dateUntilExpires := user.LastPayment.AddDate(0, 0, plan.Duration+1)
 	fmt.Println(dateUntilExpires)
 	timeComparison := dateUntilExpires.Compare(time.Now())
-	daysUntilExpiration := math.Floor(time.Since(dateUntilExpires).Hours() / 24)
+	daysUntilExpiration := math.Floor(time.Until(dateUntilExpires).Hours() / 24)
 	if timeComparison < 0 {
 		return 0, errors.New(fmt.Sprintf("your plan has expired in %v days, please renew it", daysUntilExpiration))
 	}
