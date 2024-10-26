@@ -48,11 +48,7 @@ func SetUserGymAdmin(id string) error {
 }
 
 func GetUserGym(userId string) (gym models.Gym, err error) {
-	user, err := GetUserById(userId)
-	if err != nil {
-		return gym, err
-	}
-	gym, err = GetGymById(*user.GymId)
+	err = db.QueryRow("SELECT gyms.id, gyms.admin_id, gyms.name, gyms.description, gyms.location, gyms.number  FROM gyms JOIN users ON gyms.id = users.gym_id WHERE users.id = $1", userId).Scan(&gym.Id, &gym.AdminId, &gym.Name, &gym.Description, &gym.Location, &gym.Number)
 	if err != nil {
 		return gym, err
 	}

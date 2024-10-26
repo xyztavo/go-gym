@@ -28,3 +28,13 @@ func CreateExercise(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Write(b)
 }
+
+func GetExercises(w http.ResponseWriter, r *http.Request) {
+	exercises, err := database.GetExercises()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	b, _ := json.Marshal(exercises)
+	w.Write(b)
+}

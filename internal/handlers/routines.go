@@ -28,3 +28,13 @@ func CreateRoutine(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
 }
+
+func GetRoutines(w http.ResponseWriter, r *http.Request) {
+	routines, err := database.GetRoutines()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	b, _ := json.Marshal(routines)
+	w.Write(b)
+}

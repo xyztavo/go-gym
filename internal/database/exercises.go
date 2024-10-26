@@ -14,3 +14,19 @@ func CreateExercise(exercise *models.CreateExercise) (createdExerciseId string, 
 	}
 	return createdExerciseId, nil
 }
+
+func GetExercises() (exercises []models.Exercise, err error) {
+	rows, err := db.Query("SELECT * FROM exercises")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var exercise models.Exercise
+		rows.Scan(&exercise.Id, &exercise.Name, &exercise.Description, &exercise.Gif)
+		exercises = append(exercises, exercise)
+		if err := rows.Err(); err != nil {
+			return nil, err
+		}
+	}
+	return exercises, nil
+}

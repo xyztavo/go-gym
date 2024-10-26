@@ -147,7 +147,7 @@ func AdminOrGymAdminAuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 		if user.Role == "regular" {
-			http.Error(w, "user must be admin or gymadmin to create exercises", http.StatusUnauthorized)
+			http.Error(w, "user must be admin or gymadmin", http.StatusUnauthorized)
 			return
 		}
 		next.ServeHTTP(w, r)
