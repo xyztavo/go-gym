@@ -82,15 +82,6 @@ func Migrate() error {
 	FOREIGN KEY (collection_id) REFERENCES collections(id),
     FOREIGN KEY (exercise_rep_id) REFERENCES exercises_reps(id)
 	);
-	CREATE TABLE IF NOT EXISTS gyms_exercises_reps_collections (
-    id VARCHAR(40) PRIMARY KEY,
-	name VARCHAR(40) UNIQUE NOT NULL,
-	description VARCHAR(40) NOT NULL,
-	gym_id VARCHAR(40) NOT NULL,
-    exercise_reps_collection_id VARCHAR(40) NOT NULL,
-    FOREIGN KEY (exercise_reps_collection_id) REFERENCES exercises_reps_collections(id),
-	FOREIGN KEY (gym_id) REFERENCES gyms(id)
-	);
 	CREATE TABLE IF NOT EXISTS routines (
 	id VARCHAR(40) PRIMARY KEY,
 	name VARCHAR(40) UNIQUE NOT NULL,

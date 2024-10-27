@@ -38,3 +38,18 @@ func GetCollections(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(routinesCollections)
 	w.Write(b)
 }
+
+func GetCollectionsByRoutineId(w http.ResponseWriter, r *http.Request) {
+	getCollectionsByRoutineIdBody := new(models.GetCollectionsByRoutineId)
+	if err := utils.BindAndValidate(r, getCollectionsByRoutineIdBody); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	collections, err := database.GetCollectionsByRoutineId(getCollectionsByRoutineIdBody)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	b, _ := json.Marshal(collections)
+	w.Write(b)
+}

@@ -10,3 +10,7 @@ type Collection struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
+
+type GetCollectionsByRoutineId struct {
+	RoutineId string `json:"routineId" validate:"required"`
+}
