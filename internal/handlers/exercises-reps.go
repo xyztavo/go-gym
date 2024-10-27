@@ -9,20 +9,20 @@ import (
 	"github.com/xyztavo/go-gym/internal/utils"
 )
 
-func CreateExerciseRoutine(w http.ResponseWriter, r *http.Request) {
-	exerciseRoutineBody := new(models.CreateExerciseRoutine)
-	if err := utils.BindAndValidate(r, exerciseRoutineBody); err != nil {
+func CreateExerciseReps(w http.ResponseWriter, r *http.Request) {
+	exerciseRepsBody := new(models.CreateExerciseReps)
+	if err := utils.BindAndValidate(r, exerciseRepsBody); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	createdExerciseRoutineId, err := database.CreateExerciseRoutine(exerciseRoutineBody)
+	createdExerciseRepsId, err := database.CreateExerciseReps(exerciseRepsBody)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	m := map[string]string{
-		"message":                  "exercise added to routine with ease",
-		"createdExerciseRoutineId": createdExerciseRoutineId,
+		"message":                  "created exercises reps with ease",
+		"createdExerciseRoutineId": createdExerciseRepsId,
 	}
 	b, _ := json.Marshal(m)
 	w.WriteHeader(http.StatusCreated)

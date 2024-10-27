@@ -1,0 +1,40 @@
+package handlers
+
+import (
+	"encoding/json"
+	"net/http"
+
+	"github.com/xyztavo/go-gym/internal/database"
+	"github.com/xyztavo/go-gym/internal/models"
+	"github.com/xyztavo/go-gym/internal/utils"
+)
+
+func CreateCollection(w http.ResponseWriter, r *http.Request) {
+	createRoutineColletionBody := new(models.CreateCollection)
+	if err := utils.BindAndValidate(r, createRoutineColletionBody); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	createdRoutineCollectionId, err := database.CreateCollection(createRoutineColletionBody)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	m := map[string]string{
+		"message":                   "routine collection created with ease",
+		"createdRoutineColletionId": createdRoutineCollectionId,
+	}
+	b, _ := json.Marshal(m)
+	w.WriteHeader(http.StatusCreated)
+	w.Write(b)
+}
+
+func GetCollections(w http.ResponseWriter, r *http.Request) {
+	routinesCollections, err := database.GetCollections()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	b, _ := json.Marshal(routinesCollections)
+	w.Write(b)
+}
