@@ -38,7 +38,6 @@ func SetGymUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
 	statusCode, err := database.SetGymUser(setGymUser.Id, idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), statusCode)

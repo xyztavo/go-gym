@@ -38,7 +38,11 @@ func AdminOrGymAdminRouter(r chi.Router) {
 	r.Get("/exercises", handlers.GetExercises)
 	r.Post("/routines", handlers.CreateRoutine)
 	r.Get("/routines", handlers.GetRoutines)
-	r.Post("/routines/exercises", handlers.CreateExerciseRoutine)
+	r.Post("/exercises-routines", handlers.CreateExerciseRoutine)
+	r.Post("/exercises-routines-collections", handlers.CreateExercisesRoutineCollection)
+	r.Get("/exercises-routines-collections", handlers.GetExercisesRoutinesCollections)
+	r.Post("/exercises-routines-collections-routines", handlers.CreateExercisesRoutineCollectionRoutine)
+	r.Get("/routines-collections-routines", handlers.GetExercisesRoutinesCollectionsRoutines)
 }
 
 func GymAdminRouter(r chi.Router) {
@@ -48,4 +52,5 @@ func GymAdminRouter(r chi.Router) {
 	r.Post("/gym/user", handlers.SetGymUser)
 	r.Get("/gym/users", handlers.GetGymUsers)
 	r.Patch("/gym/user/plan", handlers.SetUserPlan)
+	r.Post("/gym/exercises-routines-collections", handlers.CreateGymExerciseCollection)
 }

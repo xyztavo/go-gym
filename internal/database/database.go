@@ -72,11 +72,32 @@ func Migrate() error {
 	CREATE TABLE IF NOT EXISTS exercises_routines (
     id VARCHAR(40) PRIMARY KEY,
     routine_id VARCHAR(40) NOT NULL,
-    exercise_id VARCHAR(40) UNIQUE NOT NULL,
+    exercise_id VARCHAR(40) NOT NULL,
     reps INT NOT NULL,
 	sets INT NOT NULL,
     FOREIGN KEY (routine_id) REFERENCES routines(id),
     FOREIGN KEY (exercise_id) REFERENCES exercises(id)
+	);
+	CREATE TABLE IF NOT EXISTS exercises_routines_collections (
+    id VARCHAR(40) PRIMARY KEY,
+	name VARCHAR(40) UNIQUE NOT NULL,
+	description VARCHAR(40) NOT NULL
+	);
+	CREATE TABLE IF NOT EXISTS exercises_routines_collections_routines (
+	id VARCHAR(40) PRIMARY KEY,
+	exercises_routines_collections_id VARCHAR(40) NOT NULL,
+	exercises_routines_id VARCHAR(40) NOT NULL,
+	FOREIGN KEY (exercises_routines_collections_id) REFERENCES  exercises_routines_collections(id),
+    FOREIGN KEY (exercises_routines_id) REFERENCES exercises_routines(id)
+	);
+	CREATE TABLE IF NOT EXISTS gyms_exercises_routines_collections (
+    id VARCHAR(40) PRIMARY KEY,
+	name VARCHAR(40) UNIQUE NOT NULL,
+	description VARCHAR(40) NOT NULL,
+	gym_id VARCHAR(40) NOT NULL,
+    exercise_routine_collection_id VARCHAR(40) NOT NULL,
+    FOREIGN KEY (exercise_routine_collection_id) REFERENCES exercises_routines_collections(id),
+	FOREIGN KEY (gym_id) REFERENCES gyms(id)
 	);
 	`)
 	if err != nil {
