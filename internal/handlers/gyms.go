@@ -48,3 +48,14 @@ func SetGymUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(statusCode)
 	w.Write(b)
 }
+
+func GetUserGymDetails(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
+	gymDetails, err := database.GetUserGymDetails(idFromToken)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	b, _ := json.Marshal(gymDetails)
+	w.Write(b)
+}

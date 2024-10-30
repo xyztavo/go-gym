@@ -14,3 +14,22 @@ type CreateGym struct {
 	Location    string `json:"location" validate:"required"`
 	Number      string `json:"number" validate:"required"`
 }
+type GymDetails struct {
+	Name        string        `json:"name"`
+	Description string        `json:"description"`
+	Location    string        `json:"location"`
+	Plans       []GymPlans    `json:"plans"`
+	Routines    []GymRoutines `json:"routines"`
+}
+
+type GymPlans struct {
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price"`
+	Duration    int     `json:"duration"`
+}
+
+type GymRoutines struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"errors"
 	"net/http"
 
@@ -51,4 +52,78 @@ func SetGymUser(userId string, adminId string) (status int, err error) {
 		return http.StatusInternalServerError, err
 	}
 	return http.StatusOK, nil
+}
+
+func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) {
+	rows, err := db.Query(`
+	SELECT g.name AS gym_name, g.description AS gym_description, 
+		g.location AS gym_location, p.name AS plan_name, p.description AS plan_description, 
+		p.price AS plan_price, p.duration AS plan_duration, r.name AS gym_routine_name, r.description AS gym_routine_description
+		FROM users AS u 
+		LEFT JOIN gyms AS g ON u.gym_id = g.id 
+		LEFT JOIN plans AS p ON p.gym_id = g.id 
+		LEFT JOIN gyms_routines AS gr ON gr.gym_id = g.id
+		LEFT JOIN routines AS r ON gr.routine_id = r.id
+		WHERE u.id = $1
+	`, userId)
+	if err != nil {
+		return gymDetails, err
+	}
+	plansMap := make(map[string]models.GymPlans)
+	routinesMap := make(map[string]models.GymRoutines)
+
+	for rows.Next() {
+		var (
+			gymName, gymDescription, gymLocation string
+			planName, planDescription            sql.NullString
+			planPrice                            sql.NullFloat64
+			planDuration                         sql.NullInt64
+			routineName, routineDescription      sql.NullString
+		)
+
+		if err := rows.Scan(&gymName, &gymDescription, &gymLocation,
+			&planName, &planDescription, &planPrice, &planDuration,
+			&routineName, &routineDescription); err != nil {
+			return gymDetails, err
+		}
+		// Set gym-level details only once
+		if gymDetails.Name == "" {
+			gymDetails.Name = gymName
+			gymDetails.Description = gymDescription
+			gymDetails.Location = gymLocation
+		}
+
+		// Handle plans
+		if planName.Valid {
+			if _, exists := plansMap[planName.String]; !exists {
+				plan := models.GymPlans{
+					Name:        planName.String,
+					Description: planDescription.String,
+					Price:       planPrice.Float64,
+					Duration:    int(planDuration.Int64),
+				}
+				plansMap[planName.String] = plan
+				gymDetails.Plans = append(gymDetails.Plans, plan)
+			}
+		}
+
+		// Handle routines
+		if routineName.Valid {
+			if _, exists := routinesMap[routineName.String]; !exists {
+				routine := models.GymRoutines{
+					Name:        routineName.String,
+					Description: routineDescription.String,
+				}
+				routinesMap[routineName.String] = routine
+				gymDetails.Routines = append(gymDetails.Routines, routine)
+			}
+		}
+	}
+
+	// Check for errors after row iteration
+	if err := rows.Err(); err != nil {
+		return gymDetails, err
+	}
+
+	return gymDetails, nil
 }

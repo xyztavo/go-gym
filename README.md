@@ -4,4 +4,5 @@
 - [x] users from gym can GET gym routines 
 - [x] users can GET collections by routines ID  
 - [x] users can GET exercises reps by collections ID 
-- [ ] users has a route that gets all info about the gym in one route (plans, routines...)
+- [x] users has a route that gets all info about the gym in one route (plans, routines...)
+- [ ] user route to get info about the user (active plan, lastpayment, when plan expires....)
