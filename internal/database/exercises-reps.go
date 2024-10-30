@@ -14,3 +14,23 @@ func CreateExerciseReps(exerciseReps *models.CreateExerciseReps) (createdExercis
 	}
 	return createdExerciseRepsId, nil
 }
+
+func GetExercisesRepsByCollectionId(getExerciseRepsByCollectionId *models.GetExercisesRepsByCollectionId) (exercisesReps []models.ExerciseRepsWithName, err error) {
+	rows, err := db.Query(`
+	SELECT e.name, e.description, er.reps, er.sets FROM collections AS c 
+		JOIN exercises_reps_collections AS erc ON c.id = erc.collection_id
+		JOIN exercises_reps AS er ON er.id = erc.exercise_rep_id
+		JOIN exercises AS e ON er.exercise_id = e.id WHERE c.id = $1
+	`, getExerciseRepsByCollectionId.CollectionId)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var exerciseReps models.ExerciseRepsWithName
+		if err = rows.Scan(&exerciseReps.Name, &exerciseReps.Description, &exerciseReps.Reps, &exerciseReps.Sets); err != nil {
+			return nil, err
+		}
+		exercisesReps = append(exercisesReps, exerciseReps)
+	}
+	return exercisesReps, nil
+}

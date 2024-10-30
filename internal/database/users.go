@@ -69,8 +69,16 @@ func SetUserPlan(setUserPlan *models.SetUserPlan) (err error) {
 		}
 		// get date until expiration
 		dateUntilExpires := user.LastPayment.AddDate(0, 0, plan.Duration+1)
-		fmt.Println(dateUntilExpires)
-		// set last payment the exact date that it will expire
+		timeComparison := dateUntilExpires.Compare(time.Now())
+		// if plan has expired, set the current timestamp to be the last payment
+		if timeComparison < 0 {
+			_, err = db.Exec("UPDATE users SET plan_id = $1, last_payment = current_timestamp WHERE id = $2", setUserPlan.PlanId, setUserPlan.UserId)
+			if err != nil {
+				return err
+			}
+			return nil
+		}
+		// if plan has not expired yet, set last payment the exact date that it will expire
 		_, err = db.Exec("UPDATE users SET plan_id = $1, last_payment = $2 WHERE id = $3", setUserPlan.PlanId, dateUntilExpires, setUserPlan.UserId)
 		if err != nil {
 			return err
@@ -116,7 +124,7 @@ func CheckIn(userId string) (daysUntilPlanExpires float64, err error) {
 	timeComparison := dateUntilExpires.Compare(time.Now())
 	daysUntilExpiration := math.Floor(time.Until(dateUntilExpires).Hours() / 24)
 	if timeComparison < 0 {
-		return 0, errors.New(fmt.Sprintf("your plan has expired in %v days, please renew it", daysUntilExpiration))
+		return 0, fmt.Errorf("your plan has expired in %v days, please renew it", daysUntilExpiration)
 	}
 	return daysUntilExpiration, nil
 }

@@ -28,6 +28,7 @@ func AuthRouter(r chi.Router) {
 	r.Get("/exercises", handlers.GetExercises)
 	r.Get("/collections", handlers.GetCollections)
 	r.Get("/routine/collections", handlers.GetCollectionsByRoutineId)
+	r.Get("/collection/exercises", handlers.GetExercisesRepsByCollectionId)
 	r.Get("/exercises-reps/collections", handlers.GetExercisesRepsCollections)
 	r.Get("/routines", handlers.GetRoutines)
 }
