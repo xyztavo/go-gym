@@ -18,8 +18,8 @@ func CreateGym(userId string, createGym *models.CreateGym) (createdGymId string,
 		return "", http.StatusBadRequest, errors.New("user already is in a gym")
 	}
 	id, _ := gonanoid.New()
-	err = db.QueryRow("INSERT INTO gyms (admin_id, id, name, description, location, number) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
-		user.Id, id, createGym.Name, createGym.Description, createGym.Location, createGym.Number).Scan(&createdGymId)
+	err = db.QueryRow("INSERT INTO gyms (admin_id, id, name, description, location, number, img) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+		user.Id, id, createGym.Name, createGym.Description, createGym.Location, createGym.Number, createGym.Img).Scan(&createdGymId)
 	if err != nil {
 		return "", http.StatusInternalServerError, errors.New("could not create ")
 	}
@@ -31,7 +31,7 @@ func CreateGym(userId string, createGym *models.CreateGym) (createdGymId string,
 }
 
 func GetGymById(gymId string) (gym models.Gym, err error) {
-	err = db.QueryRow("SELECT * FROM gyms WHERE id = $1", gymId).Scan(&gym.Id, &gym.AdminId, &gym.Name, &gym.Description, &gym.Location, &gym.Number)
+	err = db.QueryRow("SELECT * FROM gyms WHERE id = $1", gymId).Scan(&gym.Id, &gym.AdminId, &gym.Name, &gym.Description, &gym.Location, &gym.Number, &gym.Img)
 	if err != nil {
 		return gym, err
 	}
@@ -57,8 +57,9 @@ func SetGymUser(userId string, adminId string) (status int, err error) {
 func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) {
 	rows, err := db.Query(`
 	SELECT g.name AS gym_name, g.description AS gym_description, 
-		g.location AS gym_location, p.name AS plan_name, p.description AS plan_description, 
-		p.price AS plan_price, p.duration AS plan_duration, r.name AS gym_routine_name, r.description AS gym_routine_description
+		g.location AS gym_location, g.img AS gym_image, p.name AS plan_name, p.description AS plan_description, 
+		p.price AS plan_price, p.duration AS plan_duration, p.img AS plan_image, r.name AS gym_routine_name, r.description AS gym_routine_description,
+		r.img AS routine_img
 		FROM users AS u 
 		LEFT JOIN gyms AS g ON u.gym_id = g.id 
 		LEFT JOIN plans AS p ON p.gym_id = g.id 
@@ -74,16 +75,16 @@ func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) 
 
 	for rows.Next() {
 		var (
-			gymName, gymDescription, gymLocation string
-			planName, planDescription            sql.NullString
-			planPrice                            sql.NullFloat64
-			planDuration                         sql.NullInt64
-			routineName, routineDescription      sql.NullString
+			gymName, gymDescription, gymLocation, gymImage string
+			planName, planDescription, planImg             sql.NullString
+			planPrice                                      sql.NullFloat64
+			planDuration                                   sql.NullInt64
+			routineName, routineDescription, routineImg    sql.NullString
 		)
 
-		if err := rows.Scan(&gymName, &gymDescription, &gymLocation,
-			&planName, &planDescription, &planPrice, &planDuration,
-			&routineName, &routineDescription); err != nil {
+		if err := rows.Scan(&gymName, &gymDescription, &gymLocation, &gymImage,
+			&planName, &planDescription, &planPrice, &planDuration, &planImg,
+			&routineName, &routineDescription, &routineImg); err != nil {
 			return gymDetails, err
 		}
 		// Set gym-level details only once
@@ -91,6 +92,7 @@ func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) 
 			gymDetails.Name = gymName
 			gymDetails.Description = gymDescription
 			gymDetails.Location = gymLocation
+			gymDetails.Image = gymImage
 		}
 
 		// Handle plans
@@ -101,6 +103,7 @@ func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) 
 					Description: planDescription.String,
 					Price:       planPrice.Float64,
 					Duration:    int(planDuration.Int64),
+					Img:         planImg.String,
 				}
 				plansMap[planName.String] = plan
 				gymDetails.Plans = append(gymDetails.Plans, plan)
@@ -113,6 +116,7 @@ func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) 
 				routine := models.GymRoutines{
 					Name:        routineName.String,
 					Description: routineDescription.String,
+					Img:         routineImg.String,
 				}
 				routinesMap[routineName.String] = routine
 				gymDetails.Routines = append(gymDetails.Routines, routine)

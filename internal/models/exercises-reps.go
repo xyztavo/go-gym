@@ -13,6 +13,7 @@ type GetExercisesRepsByCollectionId struct {
 type ExerciseRepsWithName struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	Gif         string `json:"gif"`
 	Reps        int    `json:"reps"`
 	Sets        int    `json:"sets"`
 }

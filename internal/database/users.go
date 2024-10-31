@@ -48,7 +48,8 @@ func SetUserGymAdmin(id string) error {
 }
 
 func GetUserGym(userId string) (gym models.Gym, err error) {
-	err = db.QueryRow("SELECT gyms.id, gyms.admin_id, gyms.name, gyms.description, gyms.location, gyms.number  FROM gyms JOIN users ON gyms.id = users.gym_id WHERE users.id = $1", userId).Scan(&gym.Id, &gym.AdminId, &gym.Name, &gym.Description, &gym.Location, &gym.Number)
+	err = db.QueryRow("SELECT gyms.id, gyms.admin_id, gyms.name, gyms.description, gyms.location, gyms.number, gyms.img  FROM gyms JOIN users ON gyms.id = users.gym_id WHERE users.id = $1",
+		userId).Scan(&gym.Id, &gym.AdminId, &gym.Name, &gym.Description, &gym.Location, &gym.Number, &gym.Img)
 	if err != nil {
 		return gym, err
 	}
@@ -63,7 +64,7 @@ func SetUserPlan(setUserPlan *models.SetUserPlan) (err error) {
 	// if user already has paid
 	if user.LastPayment != nil {
 		var plan models.Plan
-		err = db.QueryRow("SELECT * FROM plans WHERE id = $1", *user.PlanId).Scan(&plan.Id, &plan.GymId, &plan.Name, &plan.Description, &plan.Price, &plan.Duration)
+		err = db.QueryRow("SELECT * FROM plans WHERE id = $1", *user.PlanId).Scan(&plan.Id, &plan.GymId, &plan.Name, &plan.Description, &plan.Price, &plan.Duration, &plan.Img)
 		if err != nil {
 			return err
 		}
@@ -115,7 +116,7 @@ func CheckIn(userId string) (daysUntilPlanExpires float64, err error) {
 		return 0, errors.New("could not find user")
 	}
 	var plan models.Plan
-	err = db.QueryRow("SELECT * FROM plans WHERE id = $1", *user.PlanId).Scan(&plan.Id, &plan.GymId, &plan.Name, &plan.Description, &plan.Price, &plan.Duration)
+	err = db.QueryRow("SELECT * FROM plans WHERE id = $1", *user.PlanId).Scan(&plan.Id, &plan.GymId, &plan.Name, &plan.Description, &plan.Price, &plan.Duration, &plan.Img)
 	if err != nil {
 		return 0, err
 	}
@@ -131,10 +132,13 @@ func CheckIn(userId string) (daysUntilPlanExpires float64, err error) {
 
 func GetUserPlanDetails(userId string) (userPlanDetails models.UserPlanDetails, err error) {
 	if err = db.QueryRow(`
-	SELECT p.name, p.description, p.duration, u.last_payment FROM users AS u 
+	SELECT p.name, p.description, p.duration, p.img, u.last_payment FROM users AS u 
 	LEFT JOIN plans AS p ON p.id = u.plan_id WHERE u.id = $1
-	`, userId).Scan(&userPlanDetails.Name, &userPlanDetails.Description, &userPlanDetails.Duration, &userPlanDetails.LastPayment); err != nil {
+	`, userId).Scan(&userPlanDetails.Name, &userPlanDetails.Description, &userPlanDetails.Duration, &userPlanDetails.Img, &userPlanDetails.LastPayment); err != nil {
 		return userPlanDetails, err
+	}
+	if userPlanDetails.Name == nil {
+		return userPlanDetails, errors.New("user does not have plan")
 	}
 	dateUntilExpires := userPlanDetails.LastPayment.AddDate(0, 0, *userPlanDetails.Duration+1)
 	userPlanDetails.ExpiresAt = &dateUntilExpires

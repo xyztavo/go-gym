@@ -7,8 +7,8 @@ import (
 
 func CreateRoutine(routine *models.CreateRoutine) (createdRoutineId string, err error) {
 	id, _ := gonanoid.New()
-	if err = db.QueryRow("INSERT INTO routines (id, name, description) VALUES ($1, $2, $3) RETURNING id",
-		id, routine.Name, routine.Description).
+	if err = db.QueryRow("INSERT INTO routines (id, name, description, img) VALUES ($1, $2, $3, $4) RETURNING id",
+		id, routine.Name, routine.Description, routine.Img).
 		Scan(&createdRoutineId); err != nil {
 		return "", nil
 	}
@@ -25,7 +25,7 @@ func GetRoutines() (routines []models.Routine, err error) {
 			return nil, err
 		}
 		var routine models.Routine
-		rows.Scan(&routine.Id, &routine.Name, &routine.Description)
+		rows.Scan(&routine.Id, &routine.Name, &routine.Description, &routine.Img)
 		routines = append(routines, routine)
 	}
 	return routines, nil

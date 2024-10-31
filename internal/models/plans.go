@@ -5,10 +5,11 @@ import "time"
 type Plan struct {
 	Id          string  `json:"id"`
 	GymId       string  `json:"gymId"`
-	Name        string  `json:"name" `
-	Description string  `json:"description" `
-	Price       float32 `json:"price" `
-	Duration    int     `json:"duration" `
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Price       float32 `json:"price"`
+	Duration    int     `json:"duration"`
+	Img         string  `json:"img"`
 }
 
 type CreatePlan struct {
@@ -16,6 +17,7 @@ type CreatePlan struct {
 	Description string  `json:"description" validate:"required"`
 	Price       float32 `json:"price" validate:"required"`
 	Duration    int     `json:"duration" validate:"required"`
+	Img         string  `json:"img" validate:"required"`
 }
 
 type SetUserPlan struct {
@@ -27,6 +29,7 @@ type UserPlanDetails struct {
 	Name        *string    `json:"name"`
 	Description *string    `json:"description"`
 	Duration    *int       `json:"duration"`
+	Img         *string    `json:"img"`
 	LastPayment *time.Time `json:"lastPayment"`
 	ExpiresIn   *float64   `json:"expiresIn"`
 	ExpiresAt   *time.Time `json:"expiresAt"`

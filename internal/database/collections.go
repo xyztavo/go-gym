@@ -7,20 +7,20 @@ import (
 
 func CreateCollection(collection *models.CreateCollection) (createdRoutineCollectionId string, err error) {
 	id, _ := gonanoid.New()
-	if err = db.QueryRow("INSERT INTO collections (id, name, description) VALUES ($1, $2, $3) RETURNING id", id, collection.Name, collection.Description).Scan(&createdRoutineCollectionId); err != nil {
+	if err = db.QueryRow("INSERT INTO collections (id, name, description, img) VALUES ($1, $2, $3, $4) RETURNING id", id, collection.Name, collection.Description, collection.Img).Scan(&createdRoutineCollectionId); err != nil {
 		return "", err
 	}
 	return createdRoutineCollectionId, nil
 }
 
 func GetCollections() (collections []models.Collection, err error) {
-	rows, err := db.Query("SELECT * FROM exercises_routines_collections")
+	rows, err := db.Query("SELECT * FROM collections")
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
 		var collection models.Collection
-		rows.Scan(&collection.Id, &collection.Name, &collection.Description)
+		rows.Scan(&collection.Id, &collection.Name, &collection.Description, &collection.Img)
 		if err := rows.Err(); err != nil {
 			return nil, err
 		}
@@ -31,7 +31,7 @@ func GetCollections() (collections []models.Collection, err error) {
 
 func GetCollectionsByRoutineId(routineId *models.GetCollectionsByRoutineId) (collections []models.Collection, err error) {
 	rows, err := db.Query(`
-	SELECT c.id, c.name, c.description FROM routines AS r 
+	SELECT c.id, c.name, c.description, c.img FROM routines AS r 
 	JOIN routines_exercises_reps_collections AS rerc ON r.id = rerc.routine_id 
 	JOIN exercises_reps_collections AS erc ON rerc.exercise_reps_collection_id = erc.id 
 	JOIN collections AS c ON erc.collection_id = c.id WHERE r.id = $1`, routineId.RoutineId)
@@ -40,7 +40,7 @@ func GetCollectionsByRoutineId(routineId *models.GetCollectionsByRoutineId) (col
 	}
 	for rows.Next() {
 		var collection models.Collection
-		rows.Scan(&collection.Id, &collection.Name, &collection.Description)
+		rows.Scan(&collection.Id, &collection.Name, &collection.Description, &collection.Img)
 		if err := rows.Err(); err != nil {
 			return nil, err
 		}
