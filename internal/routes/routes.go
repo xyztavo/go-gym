@@ -23,6 +23,7 @@ func AuthRouter(r chi.Router) {
 	r.Get("/testauth", handlers.TestAuth)
 	r.Get("/user/gym", handlers.GetUserGym)
 	r.Get("/user/gym/details", handlers.GetUserGymDetails)
+	r.Get("/user/plan/details", handlers.GetUserPlanDetails)
 	r.Post("/user/gym/check-in", handlers.CheckIn)
 	r.Get("/user/gym/plans", handlers.GetUserGymPlans)
 	r.Get("/user/gym/routines", handlers.GetUserGymRoutines)

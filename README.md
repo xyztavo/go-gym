@@ -5,4 +5,5 @@
 - [x] users can GET collections by routines ID  
 - [x] users can GET exercises reps by collections ID 
 - [x] users has a route that gets all info about the gym in one route (plans, routines...)
-- [ ] user route to get info about the user (active plan, lastpayment, when plan expires....)
+- [x] user route to get info about the user plan (active plan, lastpayment, when plan expires....)
+- [ ] give plans, exercises, routines, collections img attr in db and refactor everything(pain)

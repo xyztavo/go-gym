@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Plan struct {
 	Id          string  `json:"id"`
 	GymId       string  `json:"gymId"`
@@ -19,4 +21,13 @@ type CreatePlan struct {
 type SetUserPlan struct {
 	UserId string `json:"userId" validate:"required"`
 	PlanId string `json:"planId" validate:"required"`
+}
+
+type UserPlanDetails struct {
+	Name        *string    `json:"name"`
+	Description *string    `json:"description"`
+	Duration    *int       `json:"duration"`
+	LastPayment *time.Time `json:"lastPayment"`
+	ExpiresIn   *float64   `json:"expiresIn"`
+	ExpiresAt   *time.Time `json:"expiresAt"`
 }

@@ -128,3 +128,17 @@ func CheckIn(userId string) (daysUntilPlanExpires float64, err error) {
 	}
 	return daysUntilExpiration, nil
 }
+
+func GetUserPlanDetails(userId string) (userPlanDetails models.UserPlanDetails, err error) {
+	if err = db.QueryRow(`
+	SELECT p.name, p.description, p.duration, u.last_payment FROM users AS u 
+	LEFT JOIN plans AS p ON p.id = u.plan_id WHERE u.id = $1
+	`, userId).Scan(&userPlanDetails.Name, &userPlanDetails.Description, &userPlanDetails.Duration, &userPlanDetails.LastPayment); err != nil {
+		return userPlanDetails, nil
+	}
+	dateUntilExpires := userPlanDetails.LastPayment.AddDate(0, 0, *userPlanDetails.Duration+1)
+	userPlanDetails.ExpiresAt = &dateUntilExpires
+	daysUntilExpiration := math.Floor(time.Until(dateUntilExpires).Hours() / 24)
+	userPlanDetails.ExpiresIn = &daysUntilExpiration
+	return userPlanDetails, nil
+}
