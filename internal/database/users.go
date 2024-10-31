@@ -134,7 +134,7 @@ func GetUserPlanDetails(userId string) (userPlanDetails models.UserPlanDetails, 
 	SELECT p.name, p.description, p.duration, u.last_payment FROM users AS u 
 	LEFT JOIN plans AS p ON p.id = u.plan_id WHERE u.id = $1
 	`, userId).Scan(&userPlanDetails.Name, &userPlanDetails.Description, &userPlanDetails.Duration, &userPlanDetails.LastPayment); err != nil {
-		return userPlanDetails, nil
+		return userPlanDetails, err
 	}
 	dateUntilExpires := userPlanDetails.LastPayment.AddDate(0, 0, *userPlanDetails.Duration+1)
 	userPlanDetails.ExpiresAt = &dateUntilExpires
