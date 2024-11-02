@@ -34,6 +34,7 @@ func GetUserGym(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	b, _ := json.Marshal(gym)
+	w.WriteHeader(http.StatusCreated)
 	w.Write(b)
 }
 
