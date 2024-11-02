@@ -24,6 +24,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	jwt, _ := utils.CreateUserJwt(newUserId)
 	m := map[string]string{"message": "user created with ease", "token": jwt}
 	b, _ := json.Marshal(m)
+	w.WriteHeader(http.StatusCreated)
 	w.Write(b)
 }
 func GetUserGym(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +35,6 @@ func GetUserGym(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	b, _ := json.Marshal(gym)
-	w.WriteHeader(http.StatusCreated)
 	w.Write(b)
 }
 
