@@ -54,6 +54,22 @@ func SetGymUser(userId string, adminId string) (status int, err error) {
 	return http.StatusOK, nil
 }
 
+func SetGymUserByEmail(email string, adminId string) (status int, err error) {
+	_, err = GetUserByEmail(email)
+	if err != nil {
+		return http.StatusNotFound, errors.New("cannot find user with email :" + email)
+	}
+	gym, err := GetUserGym(adminId)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	_, err = db.Exec("UPDATE users SET gym_id = $1 WHERE email = $2", gym.Id, email)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusOK, nil
+}
+
 func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) {
 	rows, err := db.Query(`
 	SELECT g.name AS gym_name, g.description AS gym_description, 

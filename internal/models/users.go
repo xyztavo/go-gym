@@ -31,6 +31,10 @@ type SetGymUser struct {
 	Id string `json:"id" validate:"required"`
 }
 
+type SetGymUserByEmail struct {
+	Email string `json:"email" validate:"required"`
+}
+
 type CreateUser struct {
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required"`
