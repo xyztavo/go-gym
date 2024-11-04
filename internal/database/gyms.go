@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
 
 	gonanoid "github.com/matoous/go-nanoid/v2"
@@ -21,7 +22,7 @@ func CreateGym(userId string, createGym *models.CreateGym) (createdGymId string,
 	err = db.QueryRow("INSERT INTO gyms (admin_id, id, name, description, location, number, img) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
 		user.Id, id, createGym.Name, createGym.Description, createGym.Location, createGym.Number, createGym.Img).Scan(&createdGymId)
 	if err != nil {
-		return "", http.StatusInternalServerError, errors.New("could not create ")
+		return "", http.StatusInternalServerError, fmt.Errorf("could not create reason: %v", err.Error())
 	}
 	_, err = db.Exec("UPDATE users SET gym_id = $1 WHERE id = $2", createdGymId, user.Id)
 	if err != nil {
@@ -73,7 +74,7 @@ func SetGymUserByEmail(email string, adminId string) (status int, err error) {
 func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) {
 	rows, err := db.Query(`
 	SELECT g.name AS gym_name, g.description AS gym_description, 
-		g.location AS gym_location, g.img AS gym_image, p.name AS plan_name, p.description AS plan_description, 
+		g.location AS gym_location, g.number AS gym_number, g.img AS gym_image, p.name AS plan_name, p.description AS plan_description, 
 		p.price AS plan_price, p.duration AS plan_duration, p.img AS plan_image, r.name AS gym_routine_name, r.description AS gym_routine_description,
 		r.img AS routine_img
 		FROM users AS u 
@@ -91,14 +92,14 @@ func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) 
 
 	for rows.Next() {
 		var (
-			gymName, gymDescription, gymLocation, gymImage string
-			planName, planDescription, planImg             sql.NullString
-			planPrice                                      sql.NullFloat64
-			planDuration                                   sql.NullInt64
-			routineName, routineDescription, routineImg    sql.NullString
+			gymName, gymDescription, gymLocation, gymNumber, gymImage string
+			planName, planDescription, planImg                        sql.NullString
+			planPrice                                                 sql.NullFloat64
+			planDuration                                              sql.NullInt64
+			routineName, routineDescription, routineImg               sql.NullString
 		)
 
-		if err := rows.Scan(&gymName, &gymDescription, &gymLocation, &gymImage,
+		if err := rows.Scan(&gymName, &gymDescription, &gymLocation, &gymNumber, &gymImage,
 			&planName, &planDescription, &planPrice, &planDuration, &planImg,
 			&routineName, &routineDescription, &routineImg); err != nil {
 			return gymDetails, err
@@ -108,6 +109,7 @@ func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) 
 			gymDetails.Name = gymName
 			gymDetails.Description = gymDescription
 			gymDetails.Location = gymLocation
+			gymDetails.Number = gymNumber
 			gymDetails.Image = gymImage
 		}
 

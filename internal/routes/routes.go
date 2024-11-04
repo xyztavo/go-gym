@@ -47,7 +47,7 @@ func AuthRouter(r chi.Router) {
 
 func AdminRouter(r chi.Router) {
 	r.Use(middlewares.AdminAuthMiddleware)
-	r.Get("/admin/testauth", handlers.TestAuth)
+	r.Get("/admin/test-auth", handlers.TestAuth)
 	r.Post("/users/gym-admin", handlers.SetUserGymAdmin)
 	r.Post("/users/gym-admin/email", handlers.SetUserGymAdminByEmail)
 }
@@ -64,6 +64,7 @@ func AdminOrGymAdminRouter(r chi.Router) {
 
 func GymAdminRouter(r chi.Router) {
 	r.Use(middlewares.GymAdminAuthMiddleware)
+	r.Get("/gym/admin/test-auth", handlers.TestAuth)
 	r.Post("/gym", handlers.CreateGym)
 	r.Post("/gym/plans", handlers.CreatePlan)
 	r.Post("/gym/user", handlers.SetGymUser)

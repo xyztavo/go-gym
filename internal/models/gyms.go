@@ -20,6 +20,7 @@ type GymDetails struct {
 	Name        string        `json:"name"`
 	Description string        `json:"description"`
 	Location    string        `json:"location"`
+	Number      string        `json:"number"`
 	Image       string        `json:"image"`
 	Plans       []GymPlans    `json:"plans"`
 	Routines    []GymRoutines `json:"routines"`

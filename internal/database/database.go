@@ -33,7 +33,7 @@ func Migrate() error {
 	description VARCHAR(40) NOT NULL,
 	location VARCHAR(40) NOT NULL,
 	number VARCHAR(40) NOT NULL,
-	img VARCHAR(40) NOT NULL
+	img VARCHAR(200) NOT NULL
 	);
 	CREATE TABLE IF NOT EXISTS plans (
 	id VARCHAR(40) PRIMARY KEY,
@@ -42,7 +42,7 @@ func Migrate() error {
 	description VARCHAR(40) NOT NULL,
 	price DOUBLE PRECISION NOT NULL,
 	duration INT NOT NULL,
-	img VARCHAR(40) NOT NULL,
+	img VARCHAR(200) NOT NULL,
 	FOREIGN KEY (gym_id) REFERENCES gyms(id)
 	);
 	CREATE TABLE IF NOT EXISTS users (
@@ -63,7 +63,7 @@ func Migrate() error {
 	id VARCHAR(40) PRIMARY KEY,
 	name VARCHAR(40) UNIQUE NOT NULL,
 	description VARCHAR(40) NOT NULL,
-	gif VARCHAR(40) NOT NULL
+	gif VARCHAR(200) NOT NULL
 	);
 	CREATE TABLE IF NOT EXISTS exercises_reps (
     id VARCHAR(40) PRIMARY KEY,
@@ -76,7 +76,7 @@ func Migrate() error {
     id VARCHAR(40) PRIMARY KEY,
 	name VARCHAR(40) UNIQUE NOT NULL,
 	description VARCHAR(40) NOT NULL,
-	img VARCHAR(40) NOT NULL
+	img VARCHAR(200) NOT NULL
 	);
 	CREATE TABLE IF NOT EXISTS exercises_reps_collections (
 	id VARCHAR(40) PRIMARY KEY,
@@ -89,7 +89,7 @@ func Migrate() error {
 	id VARCHAR(40) PRIMARY KEY,
 	name VARCHAR(40) UNIQUE NOT NULL,
 	description VARCHAR(40) NOT NULL,
-	img VARCHAR(40) NOT NULL
+	img VARCHAR(200) NOT NULL
 	);
 	CREATE TABLE IF NOT EXISTS routines_exercises_reps_collections (
 	id VARCHAR(40) PRIMARY KEY,
