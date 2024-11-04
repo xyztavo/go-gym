@@ -47,6 +47,18 @@ func SetUserGymAdmin(id string) error {
 	return nil
 }
 
+func SetUserGymAdminByEmail(email string) error {
+	_, err := GetUserByEmail(email)
+	if err != nil {
+		return errors.New("user not found")
+	}
+	_, err = db.Exec("UPDATE users SET role = 'gym-admin' WHERE email = $1", email)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func GetUserGym(userId string) (gym models.Gym, err error) {
 	err = db.QueryRow("SELECT gyms.id, gyms.admin_id, gyms.name, gyms.description, gyms.location, gyms.number, gyms.img  FROM gyms JOIN users ON gyms.id = users.gym_id WHERE users.id = $1",
 		userId).Scan(&gym.Id, &gym.AdminId, &gym.Name, &gym.Description, &gym.Location, &gym.Number, &gym.Img)

@@ -53,6 +53,21 @@ func SetUserGymAdmin(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+func SetUserGymAdminByEmail(w http.ResponseWriter, r *http.Request) {
+	SetUserGymAdminByEmail := new(models.SetUserGymAdminByEmail)
+	if err := utils.BindAndValidate(r, SetUserGymAdminByEmail); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if err := database.SetUserGymAdminByEmail(SetUserGymAdminByEmail.Email); err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	m := map[string]string{"message": fmt.Sprintf("user with email %v is now gym admin", SetUserGymAdminByEmail.Email)}
+	b, _ := json.Marshal(m)
+	w.Write(b)
+}
+
 func GetGymUsers(w http.ResponseWriter, r *http.Request) {
 	idFromToken := utils.UserIdFromToken(r)
 	gym, err := database.GetUserGym(idFromToken)
