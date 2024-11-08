@@ -30,11 +30,26 @@ func CreateExercisesRepsCollection(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetExercisesRepsCollections(w http.ResponseWriter, r *http.Request) {
-	routinesCollectionRoutines, err := database.GetExercisesRoutinesCollectionsRoutines()
+	routinesCollectionRoutines, err := database.GetExercisesRepsCollection()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	b, _ := json.Marshal(routinesCollectionRoutines)
+	w.Write(b)
+}
+
+func GetExercisesRepsCollectionsByCollectionId(w http.ResponseWriter, r *http.Request) {
+	collectionId := new(models.GetExercisesRepsByCollectionId)
+	if err := utils.BindAndValidate(r, collectionId); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	exercisesReps, err := database.GetExercisesRepsCollectionsByCollectionId(collectionId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	b, _ := json.Marshal(exercisesReps)
 	w.Write(b)
 }

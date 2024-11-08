@@ -39,8 +39,8 @@ func AuthRouter(r chi.Router) {
 	r.Get("/user/gym/routines", handlers.GetUserGymRoutines)
 	r.Get("/exercises", handlers.GetExercises)
 	r.Get("/collections", handlers.GetCollections)
+	r.Get("/collections/exercises-reps", handlers.GetExercisesRepsCollectionsByCollectionId)
 	r.Get("/routine/collections", handlers.GetCollectionsByRoutineId)
-	r.Get("/collection/exercises", handlers.GetExercisesRepsByCollectionId)
 	r.Get("/exercises-reps/collections", handlers.GetExercisesRepsCollections)
 	r.Get("/routines", handlers.GetRoutines)
 }
@@ -55,7 +55,6 @@ func AdminRouter(r chi.Router) {
 func AdminOrGymAdminRouter(r chi.Router) {
 	r.Use(middlewares.AdminOrGymAdminAuthMiddleware)
 	r.Post("/exercises", handlers.CreateExercise)
-	r.Post("/exercises-reps", handlers.CreateExerciseReps)
 	r.Post("/collections", handlers.CreateCollection)
 	r.Post("/exercises-reps/collections", handlers.CreateExercisesRepsCollection)
 	r.Post("/routines", handlers.CreateRoutine)
