@@ -30,7 +30,8 @@ func CreateExercise(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetExercises(w http.ResponseWriter, r *http.Request) {
-	exercises, err := database.GetExercises()
+	query := r.URL.Query().Get("query")
+	exercises, err := database.GetExercises(query)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
