@@ -17,7 +17,7 @@ func CreateExercise(exercise *models.CreateExercise) (createdExerciseId string, 
 
 func GetExercises(query string) (exercises []models.Exercise, err error) {
 	query = "%" + query + "%"
-	rows, err := db.Query("SELECT * FROM exercises WHERE name LIKE $1", query)
+	rows, err := db.Query("SELECT * FROM exercises WHERE name ILIKE $1", query)
 	if err != nil {
 		return nil, err
 	}
