@@ -8,6 +8,7 @@ type CreateCollection struct {
 
 type Collection struct {
 	Id          string `json:"id"`
+	AdminId     string `json:"adminId"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Img         string `json:"img"`

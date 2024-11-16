@@ -5,14 +5,21 @@ import (
 	"github.com/xyztavo/go-gym/internal/models"
 )
 
-func CreateRoutine(routine *models.CreateRoutine) (createdRoutineId string, err error) {
+func CreateRoutine(adminId string, routine *models.CreateRoutine) (createdRoutineId string, err error) {
 	id, _ := gonanoid.New()
-	if err = db.QueryRow("INSERT INTO routines (id, name, description, img) VALUES ($1, $2, $3, $4) RETURNING id",
-		id, routine.Name, routine.Description, routine.Img).
+	if err = db.QueryRow("INSERT INTO routines (id, admin_id, name, description, img) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+		id, adminId, routine.Name, routine.Description, routine.Img).
 		Scan(&createdRoutineId); err != nil {
-		return "", nil
+		return "", err
 	}
 	return createdRoutineId, nil
+}
+
+func GetRoutineById(id string) (routine models.Routine, err error) {
+	if err := db.QueryRow("SELECT * FROM routines WHERE id = $1", id).Scan(&routine.Id, &routine.AdminId, &routine.Name, &routine.Description, &routine.Img); err != nil {
+		return routine, err
+	}
+	return routine, nil
 }
 
 func GetRoutines() (routines []models.Routine, err error) {
@@ -25,7 +32,7 @@ func GetRoutines() (routines []models.Routine, err error) {
 			return nil, err
 		}
 		var routine models.Routine
-		rows.Scan(&routine.Id, &routine.Name, &routine.Description, &routine.Img)
+		rows.Scan(&routine.Id, &routine.AdminId, &routine.Name, &routine.Description, &routine.Img)
 		routines = append(routines, routine)
 	}
 	return routines, nil

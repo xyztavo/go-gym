@@ -67,31 +67,39 @@ func Migrate() error {
 	);
 	CREATE TABLE IF NOT EXISTS collections (
     id VARCHAR(40) PRIMARY KEY,
+	admin_id VARCHAR(40) NOT NULL,
 	name VARCHAR(40) UNIQUE NOT NULL,
 	description VARCHAR(200) NOT NULL,
-	img VARCHAR(200) NOT NULL
+	img VARCHAR(200) NOT NULL,
+	FOREIGN KEY (admin_id) REFERENCES users(id)
 	);
 	CREATE TABLE IF NOT EXISTS exercises_reps_collections (
 	id VARCHAR(40) PRIMARY KEY,
+	admin_id VARCHAR(40) NOT NULL,
 	collection_id VARCHAR(40) NOT NULL,
 	exercise_id VARCHAR(40) NOT NULL,
     reps INT NOT NULL,
 	sets INT NOT NULL,
 	FOREIGN KEY (collection_id) REFERENCES collections(id),
-    FOREIGN KEY (exercise_id) REFERENCES exercises(id)
+    FOREIGN KEY (exercise_id) REFERENCES exercises(id),
+	FOREIGN KEY (admin_id) REFERENCES users(id)
 	);
 	CREATE TABLE IF NOT EXISTS routines (
 	id VARCHAR(40) PRIMARY KEY,
+	admin_id VARCHAR(40) NOT NULL,
 	name VARCHAR(40) UNIQUE NOT NULL,
 	description VARCHAR(200) NOT NULL,
-	img VARCHAR(200) NOT NULL
+	img VARCHAR(200) NOT NULL,
+	FOREIGN KEY (admin_id) REFERENCES users(id)
 	);
 	CREATE TABLE IF NOT EXISTS routines_exercises_reps_collections (
 	id VARCHAR(40) PRIMARY KEY,
+	admin_id VARCHAR(40) NOT NULL,
 	routine_id VARCHAR(40) NOT NULL,
 	exercise_reps_collection_id VARCHAR(40) NOT NULL,
 	FOREIGN KEY (routine_id) REFERENCES routines(id),
-	FOREIGN KEY (exercise_reps_collection_id) REFERENCES exercises_reps_collections(id)
+	FOREIGN KEY (exercise_reps_collection_id) REFERENCES exercises_reps_collections(id),
+	FOREIGN KEY (admin_id) REFERENCES users(id)
 	);
 	CREATE TABLE IF NOT EXISTS gyms_routines (
 	id VARCHAR(40) PRIMARY KEY,

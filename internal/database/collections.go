@@ -5,9 +5,9 @@ import (
 	"github.com/xyztavo/go-gym/internal/models"
 )
 
-func CreateCollection(collection *models.CreateCollection) (createdRoutineCollectionId string, err error) {
+func CreateCollection(adminId string, collection *models.CreateCollection) (createdRoutineCollectionId string, err error) {
 	id, _ := gonanoid.New()
-	if err = db.QueryRow("INSERT INTO collections (id, name, description, img) VALUES ($1, $2, $3, $4) RETURNING id", id, collection.Name, collection.Description, collection.Img).Scan(&createdRoutineCollectionId); err != nil {
+	if err = db.QueryRow("INSERT INTO collections (id, admin_id, name, description, img) VALUES ($1, $2, $3, $4, $5) RETURNING id", id, adminId, collection.Name, collection.Description, collection.Img).Scan(&createdRoutineCollectionId); err != nil {
 		return "", err
 	}
 	return createdRoutineCollectionId, nil
@@ -20,13 +20,20 @@ func GetCollections() (collections []models.Collection, err error) {
 	}
 	for rows.Next() {
 		var collection models.Collection
-		rows.Scan(&collection.Id, &collection.Name, &collection.Description, &collection.Img)
+		rows.Scan(&collection.Id, &collection.AdminId, &collection.Name, &collection.Description, &collection.Img)
 		if err := rows.Err(); err != nil {
 			return nil, err
 		}
 		collections = append(collections, collection)
 	}
 	return collections, nil
+}
+
+func GetCollectionById(id string) (collection models.Collection, err error) {
+	if err := db.QueryRow("SELECT * FROM collections WHERE id = $1", id).Scan(&collection.Id, &collection.AdminId, &collection.Name, &collection.Description, &collection.Img); err != nil {
+		return collection, err
+	}
+	return collection, nil
 }
 
 func GetCollectionsByRoutineId(routineId *models.GetCollectionsByRoutineId) (collections []models.Collection, err error) {

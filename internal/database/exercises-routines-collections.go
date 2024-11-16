@@ -1,14 +1,23 @@
 package database
 
 import (
+	"errors"
+
 	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/xyztavo/go-gym/internal/models"
 )
 
-func CreateExercisesRepCollection(addExerciseRoutinesCollectionRoutines *models.CreateExerciseRepsCollection) (createdaddRoutinesCollectionRoutinesId string, err error) {
+func CreateExercisesRepCollection(adminId string, addExerciseRoutinesCollectionRoutines *models.CreateExerciseRepsCollection) (createdaddRoutinesCollectionRoutinesId string, err error) {
 	id, _ := gonanoid.New()
-	if err = db.QueryRow("INSERT INTO exercises_reps_collections (id, collection_id, exercise_id, reps, sets) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-		id, addExerciseRoutinesCollectionRoutines.CollectionId, addExerciseRoutinesCollectionRoutines.ExerciseId,
+	collection, err := GetCollectionById(addExerciseRoutinesCollectionRoutines.CollectionId)
+	if err != nil {
+		return "", err
+	}
+	if adminId != collection.AdminId {
+		return "", errors.New("user is not the collection admin")
+	}
+	if err = db.QueryRow("INSERT INTO exercises_reps_collections (id, admin_id, collection_id, exercise_id, reps, sets) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+		id, adminId, addExerciseRoutinesCollectionRoutines.CollectionId, addExerciseRoutinesCollectionRoutines.ExerciseId,
 		addExerciseRoutinesCollectionRoutines.Reps, addExerciseRoutinesCollectionRoutines.Sets).
 		Scan(&createdaddRoutinesCollectionRoutinesId); err != nil {
 		return "", err

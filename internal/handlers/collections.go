@@ -10,12 +10,13 @@ import (
 )
 
 func CreateCollection(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
 	createRoutineColletionBody := new(models.CreateCollection)
 	if err := utils.BindAndValidate(r, createRoutineColletionBody); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	createdRoutineCollectionId, err := database.CreateCollection(createRoutineColletionBody)
+	createdRoutineCollectionId, err := database.CreateCollection(idFromToken, createRoutineColletionBody)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -15,7 +15,8 @@ func CreateRoutine(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	createdRoutineBodyId, err := database.CreateRoutine(createRoutineBody)
+	idFromToken := utils.UserIdFromToken(r)
+	createdRoutineBodyId, err := database.CreateRoutine(idFromToken, createRoutineBody)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

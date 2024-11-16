@@ -15,7 +15,8 @@ func CreateRoutineExerciseRepsCollection(w http.ResponseWriter, r *http.Request)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	createdRoutineExerciseRepsCollectionId, err := database.CreateRoutineExerciseRepsCollection(createRoutineExerciseRepsCollectionBody)
+	idFromToken := utils.UserIdFromToken(r)
+	createdRoutineExerciseRepsCollectionId, err := database.CreateRoutineExerciseRepsCollection(idFromToken, createRoutineExerciseRepsCollectionBody)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

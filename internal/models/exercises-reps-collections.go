@@ -9,6 +9,7 @@ type CreateExerciseRepsCollection struct {
 
 type ExerciseRepsCollection struct {
 	Id                       string `json:"id"`
+	AdminId                  string `json:"adminId"`
 	ExerciseRepsCollectionId string `json:"exerciseRepsCollectionId"`
 	ExerciseId               string `json:"exerciseId"`
 	Reps                     int    `json:"Reps"`
