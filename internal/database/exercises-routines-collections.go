@@ -2,6 +2,8 @@ package database
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 
 	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/xyztavo/go-gym/internal/models"
@@ -23,6 +25,41 @@ func CreateExercisesRepCollection(adminId string, addExerciseRoutinesCollectionR
 		return "", err
 	}
 	return createdaddRoutinesCollectionRoutinesId, nil
+}
+
+func CreateMultipleExercisesRepCollection(adminId string, addMultipleExerciseRoutinesCollectionRoutines *models.CreateMultipleExercisesRepCollection) error {
+	collection, err := GetCollectionById(addMultipleExerciseRoutinesCollectionRoutines.CollectionId)
+	if err != nil {
+		return err
+	}
+	if adminId != collection.AdminId {
+		return errors.New("user is not the collection admin")
+	}
+
+	vals := []interface{}{}
+	valuePlaceholders := []string{}
+
+	// gpt aah code that works
+	for i, row := range addMultipleExerciseRoutinesCollectionRoutines.CreateExerciseRepsCollection {
+		id, _ := gonanoid.New()   // Generate a new ID for each row
+		placeholderIndex := i * 6 // Each row has 6 values
+		valuePlaceholders = append(valuePlaceholders, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d)", placeholderIndex+1, placeholderIndex+2, placeholderIndex+3, placeholderIndex+4, placeholderIndex+5, placeholderIndex+6))
+		vals = append(vals, id, adminId, addMultipleExerciseRoutinesCollectionRoutines.CollectionId, row.ExerciseId, row.Reps, row.Sets)
+	}
+
+	if len(valuePlaceholders) == 0 {
+		return errors.New("no exercises to add")
+	}
+
+	// Construct SQL statement
+	sqlString := fmt.Sprintf("INSERT INTO exercises_reps_collections (id, admin_id, collection_id, exercise_id, reps, sets) VALUES %s", strings.Join(valuePlaceholders, ", "))
+
+	// Execute the SQL command
+	_, err = db.Exec(sqlString, vals...)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func GetExercisesRepsCollection() (exercisesRoutinesCollectionsRoutines []models.ExerciseRepsCollection, err error) {

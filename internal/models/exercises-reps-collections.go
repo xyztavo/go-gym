@@ -7,6 +7,17 @@ type CreateExerciseRepsCollection struct {
 	Sets         int    `json:"Sets" validate:"required"`
 }
 
+type CreateMultipleExercisesRepCollection struct {
+	CollectionId                 string                        `json:"collectionId" validate:"required"`
+	CreateExerciseRepsCollection []AddExerciseToRepsCollection `json:"exerciseReps"`
+}
+
+type AddExerciseToRepsCollection struct {
+	ExerciseId string `json:"exerciseId" validate:"required"`
+	Reps       int    `json:"reps" validate:"required"`
+	Sets       int    `json:"sets" validate:"required"`
+}
+
 type ExerciseRepsCollection struct {
 	Id                       string `json:"id"`
 	AdminId                  string `json:"adminId"`

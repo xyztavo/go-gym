@@ -57,6 +57,7 @@ func AdminOrGymAdminRouter(r chi.Router) {
 	r.Post("/exercises", handlers.CreateExercise)
 	r.Post("/collections", handlers.CreateCollection)
 	r.Post("/exercises-reps/collections", handlers.CreateExercisesRepsCollection)
+	r.Post("/exercises-reps/collections/multiple", handlers.CreateMultipleExercisesRepCollection)
 	r.Post("/routines", handlers.CreateRoutine)
 	r.Post("/routines/exercises-reps/collections", handlers.CreateRoutineExerciseRepsCollection)
 }

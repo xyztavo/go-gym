@@ -30,6 +30,23 @@ func CreateExercisesRepsCollection(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+func CreateMultipleExercisesRepCollection(w http.ResponseWriter, r *http.Request) {
+	body := new(models.CreateMultipleExercisesRepCollection)
+	if err := utils.BindAndValidate(r, body); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	idFromToken := utils.UserIdFromToken(r)
+	if err := database.CreateMultipleExercisesRepCollection(idFromToken, body); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	m := map[string]string{"message": "exercises added to collection with ease"}
+	b, _ := json.Marshal(m)
+	w.WriteHeader(http.StatusCreated)
+	w.Write(b)
+}
+
 func GetExercisesRepsCollections(w http.ResponseWriter, r *http.Request) {
 	routinesCollectionRoutines, err := database.GetExercisesRepsCollection()
 	if err != nil {
