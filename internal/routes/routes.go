@@ -39,7 +39,7 @@ func AuthRouter(r chi.Router) {
 	r.Get("/user/gym/routines", handlers.GetUserGymRoutines)
 	r.Get("/exercises", handlers.GetExercises)
 	r.Get("/collections", handlers.GetCollections)
-	r.Get("/collections/exercises-reps", handlers.GetExercisesRepsCollectionsByCollectionId)
+	r.Get("/collections/{id}/exercises-reps", handlers.GetExercisesRepsCollectionsByCollectionId)
 	r.Get("/routine/collections", handlers.GetCollectionsByRoutineId)
 	r.Get("/exercises-reps/collections", handlers.GetExercisesRepsCollections)
 	r.Get("/routines", handlers.GetRoutines)

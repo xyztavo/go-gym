@@ -30,6 +30,7 @@ type GetExercisesRepsByCollectionId struct {
 	CollectionId string `json:"collectionId" validate:"required"`
 }
 type ExerciseRepCollectionFormatted struct {
+	Id          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Gif         string `json:"gif"`

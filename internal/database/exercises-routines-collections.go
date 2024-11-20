@@ -78,19 +78,19 @@ func GetExercisesRepsCollection() (exercisesRoutinesCollectionsRoutines []models
 	return exercisesRoutinesCollectionsRoutines, nil
 }
 
-func GetExercisesRepsCollectionsByCollectionId(collectionId *models.GetExercisesRepsByCollectionId) (exercisesRepsCollections []models.ExerciseRepCollectionFormatted, err error) {
+func GetExercisesRepsCollectionsByCollectionId(collectionId string) (exercisesRepsCollections []models.ExerciseRepCollectionFormatted, err error) {
 	rows, err := db.Query(`
-	SELECT e.name, e.description, e.gif, erc.reps, erc.sets 
+	SELECT e.id, e.name, e.description, e.gif, erc.reps, erc.sets 
 		FROM collections AS c 
 		LEFT JOIN exercises_reps_collections AS erc 
 		LEFT JOIN exercises AS e ON erc.exercise_id = e.id
-		ON c.id = erc.collection_id WHERE c.id = $1`, collectionId.CollectionId)
+		ON c.id = erc.collection_id WHERE c.id = $1`, collectionId)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
 		var exerciseRepsCollection models.ExerciseRepCollectionFormatted
-		if err := rows.Scan(&exerciseRepsCollection.Name, &exerciseRepsCollection.Description, &exerciseRepsCollection.Gif,
+		if err := rows.Scan(&exerciseRepsCollection.Id, &exerciseRepsCollection.Name, &exerciseRepsCollection.Description, &exerciseRepsCollection.Gif,
 			&exerciseRepsCollection.Reps, &exerciseRepsCollection.Sets); err != nil {
 			return nil, err
 		}

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/xyztavo/go-gym/internal/database"
 	"github.com/xyztavo/go-gym/internal/models"
 	"github.com/xyztavo/go-gym/internal/utils"
@@ -58,12 +59,8 @@ func GetExercisesRepsCollections(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetExercisesRepsCollectionsByCollectionId(w http.ResponseWriter, r *http.Request) {
-	collectionId := new(models.GetExercisesRepsByCollectionId)
-	if err := utils.BindAndValidate(r, collectionId); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	exercisesReps, err := database.GetExercisesRepsCollectionsByCollectionId(collectionId)
+	id := chi.URLParam(r, "id")
+	exercisesReps, err := database.GetExercisesRepsCollectionsByCollectionId(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
