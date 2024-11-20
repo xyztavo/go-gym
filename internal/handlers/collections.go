@@ -40,6 +40,17 @@ func GetCollections(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+func GetAdminCollections(w http.ResponseWriter, r *http.Request) {
+	id := utils.UserIdFromToken(r)
+	routinesCollections, err := database.GetAdminCollections(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	b, _ := json.Marshal(routinesCollections)
+	w.Write(b)
+}
+
 func GetCollectionsByRoutineId(w http.ResponseWriter, r *http.Request) {
 	getCollectionsByRoutineIdBody := new(models.GetCollectionsByRoutineId)
 	if err := utils.BindAndValidate(r, getCollectionsByRoutineIdBody); err != nil {

@@ -56,6 +56,7 @@ func AdminOrGymAdminRouter(r chi.Router) {
 	r.Use(middlewares.AdminOrGymAdminAuthMiddleware)
 	r.Post("/exercises", handlers.CreateExercise)
 	r.Post("/collections", handlers.CreateCollection)
+	r.Get("/user/collections", handlers.GetAdminCollections)
 	r.Post("/exercises-reps/collections", handlers.CreateExercisesRepsCollection)
 	r.Post("/exercises-reps/collections/multiple", handlers.CreateMultipleExercisesRepCollection)
 	r.Post("/routines", handlers.CreateRoutine)

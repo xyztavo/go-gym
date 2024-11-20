@@ -55,3 +55,19 @@ func GetCollectionsByRoutineId(routineId *models.GetCollectionsByRoutineId) (col
 	}
 	return collections, nil
 }
+
+func GetAdminCollections(adminId string) (collections []models.Collection, err error) {
+	rows, err := db.Query("SELECT * FROM collections WHERE admin_id = $1", adminId)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var collection models.Collection
+		rows.Scan(&collection.Id, &collection.AdminId, &collection.Name, &collection.Description, &collection.Img)
+		if err := rows.Err(); err != nil {
+			return nil, err
+		}
+		collections = append(collections, collection)
+	}
+	return collections, nil
+}
