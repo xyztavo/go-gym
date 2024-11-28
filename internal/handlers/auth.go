@@ -27,7 +27,7 @@ func GetAuth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	jwt, _ := utils.CreateUserJwt(userFromDb.Id)
-	m := map[string]string{"message": "authorized", "token": jwt}
+	m := map[string]string{"message": "authorized", "token": jwt, "role": userFromDb.Role}
 	b, _ := json.Marshal(m)
 	w.Write(b)
 }
