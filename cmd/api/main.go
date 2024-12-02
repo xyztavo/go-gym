@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -14,5 +15,13 @@ func main() {
 		log.Fatal(err)
 	}
 	r := routes.SetupRoutes()
+	fmt.Printf(`
+
+┏┓  ┏┓     
+┃┓┏┓┃┓┓┏┏┳┓
+┗┛┗┛┗┛┗┫┛┗┗
+       ┛    
+http://localhost%v
+	`, configs.GetPort())
 	http.ListenAndServe(configs.GetPort(), r)
 }

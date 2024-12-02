@@ -15,9 +15,11 @@ func CreateExercise(exercise *models.CreateExercise) (createdExerciseId string, 
 	return createdExerciseId, nil
 }
 
-func GetExercises(query string) (exercises []models.Exercise, err error) {
+func GetExercises(query string, page int) (exercises []models.Exercise, err error) {
+	res := 20
+	pageOffset := res * page
 	query = "%" + query + "%"
-	rows, err := db.Query("SELECT * FROM exercises WHERE name ILIKE $1", query)
+	rows, err := db.Query("SELECT * FROM exercises WHERE name ILIKE $1 LIMIT $2 OFFSET $3", query, res, pageOffset)
 	if err != nil {
 		return nil, err
 	}

@@ -22,8 +22,11 @@ func GetRoutineById(id string) (routine models.Routine, err error) {
 	return routine, nil
 }
 
-func GetRoutines() (routines []models.Routine, err error) {
-	rows, err := db.Query("SELECT * FROM routines")
+func GetRoutines(query string, page int) (routines []models.Routine, err error) {
+	res := 20
+	pageOffset := res * page
+	query = "%" + query + "%"
+	rows, err := db.Query("SELECT * FROM routines WHERE name ILIKE $1 LIMIT $2 OFFSET $3", query, res, pageOffset)
 	if err != nil {
 		return nil, err
 	}

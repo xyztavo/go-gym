@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/xyztavo/go-gym/internal/database"
 	"github.com/xyztavo/go-gym/internal/models"
@@ -31,7 +32,13 @@ func CreateExercise(w http.ResponseWriter, r *http.Request) {
 
 func GetExercises(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("query")
-	exercises, err := database.GetExercises(query)
+	page := r.URL.Query().Get("page")
+	intPage, err := strconv.Atoi(page)
+	if err != nil {
+		http.Error(w, err.Error()+" should specify page", http.StatusBadRequest)
+		return
+	}
+	exercises, err := database.GetExercises(query, intPage)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
