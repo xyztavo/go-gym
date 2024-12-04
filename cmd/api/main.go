@@ -16,7 +16,6 @@ func main() {
 	}
 	r := routes.SetupRoutes()
 	fmt.Printf(`
-
 ┏┓  ┏┓     
 ┃┓┏┓┃┓┓┏┏┳┓
 ┗┛┗┛┗┛┗┫┛┗┗

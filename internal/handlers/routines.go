@@ -36,14 +36,21 @@ func GetRoutines(w http.ResponseWriter, r *http.Request) {
 	page := r.URL.Query().Get("page")
 	intPage, err := strconv.Atoi(page)
 	if err != nil {
-		http.Error(w, err.Error()+" should specify page", http.StatusBadRequest)
+		http.Error(w, "Invalid page parameter: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-	routines, err := database.GetRoutines(query, intPage)
+	routines, maxPages, err := database.GetRoutines(query, intPage)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error fetching routines: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	b, _ := json.Marshal(routines)
-	w.Write(b)
+	response := map[string]interface{}{
+		"routines": routines,
+		"maxPages": maxPages,
+		"page":     intPage,
+	}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		http.Error(w, "Error encoding response: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

@@ -38,11 +38,16 @@ func GetExercises(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error()+" should specify page", http.StatusBadRequest)
 		return
 	}
-	exercises, err := database.GetExercises(query, intPage)
+	exercises, maxPages, err := database.GetExercises(query, intPage)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	b, _ := json.Marshal(exercises)
+	response := map[string]interface{}{
+		"exercises": exercises,
+		"maxPages":  maxPages,
+		"page":      intPage,
+	}
+	b, _ := json.Marshal(response)
 	w.Write(b)
 }
