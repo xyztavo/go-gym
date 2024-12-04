@@ -57,3 +57,19 @@ func GetRoutines(query string, page int) ([]models.Routine, int, error) {
 	maxPages := (total + res - 1) / res
 	return routines, maxPages, nil
 }
+
+func GetUserRoutines(adminId string) (routines []models.Routine, err error) {
+	rows, err := db.Query("SELECT * FROM routines WHERE admin_id = $1", adminId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var routine models.Routine
+		if err := rows.Scan(&routine.Id, &routine.AdminId, &routine.Name, &routine.Description, &routine.Img); err != nil {
+			return nil, err
+		}
+		routines = append(routines, routine)
+	}
+	return routines, nil
+}

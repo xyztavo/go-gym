@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/xyztavo/go-gym/internal/database"
 	"github.com/xyztavo/go-gym/internal/models"
 	"github.com/xyztavo/go-gym/internal/utils"
@@ -52,12 +53,8 @@ func GetAdminCollections(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetCollectionsByRoutineId(w http.ResponseWriter, r *http.Request) {
-	getCollectionsByRoutineIdBody := new(models.GetCollectionsByRoutineId)
-	if err := utils.BindAndValidate(r, getCollectionsByRoutineIdBody); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	collections, err := database.GetCollectionsByRoutineId(getCollectionsByRoutineIdBody)
+	id := chi.URLParam(r, "id")
+	collections, err := database.GetCollectionsByRoutineId(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

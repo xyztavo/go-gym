@@ -54,3 +54,14 @@ func GetRoutines(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func GetUserRoutines(w http.ResponseWriter, r *http.Request) {
+	id := utils.UserIdFromToken(r)
+	routines, err := database.GetUserRoutines(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	b, _ := json.Marshal(routines)
+	w.Write(b)
+}
