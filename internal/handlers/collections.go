@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/xyztavo/go-gym/internal/database"
@@ -32,13 +33,27 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetCollections(w http.ResponseWriter, r *http.Request) {
-	routinesCollections, err := database.GetCollections()
+	query := r.URL.Query().Get("query")
+	page := r.URL.Query().Get("page")
+	intPage, err := strconv.Atoi(page)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Invalid page parameter: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-	b, _ := json.Marshal(routinesCollections)
-	w.Write(b)
+	collections, maxPages, err := database.GetCollections(query, intPage)
+	if err != nil {
+		http.Error(w, "Error fetching collections: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	response := map[string]interface{}{
+		"collections": collections,
+		"maxPages":    maxPages,
+		"page":        intPage,
+	}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		http.Error(w, "Error encoding response: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func GetAdminCollections(w http.ResponseWriter, r *http.Request) {

@@ -6,18 +6,12 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/xyztavo/go-gym/internal/database"
-	"github.com/xyztavo/go-gym/internal/models"
 	"github.com/xyztavo/go-gym/internal/utils"
 )
 
 func CreateRoutineCollection(w http.ResponseWriter, r *http.Request) {
 	routineId := chi.URLParam(r, "routineId")
 	collectionId := chi.URLParam(r, "collectionId")
-	createRoutineCollectionBody := new(models.CreateRoutineCollection)
-	if err := utils.BindAndValidate(r, createRoutineCollectionBody); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
 	idFromToken := utils.UserIdFromToken(r)
 	createdRoutineExerciseRepsCollectionId, err := database.CreateRoutineCollection(idFromToken, routineId, collectionId)
 	if err != nil {

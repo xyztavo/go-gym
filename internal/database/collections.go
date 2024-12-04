@@ -13,20 +13,40 @@ func CreateCollection(adminId string, collection *models.CreateCollection) (crea
 	return createdRoutineCollectionId, nil
 }
 
-func GetCollections() (collections []models.Collection, err error) {
-	rows, err := db.Query("SELECT * FROM collections")
+func GetCollections(query string, page int) ([]models.Collection, int, error) {
+	res := 20
+	pageOffset := res * page
+	query = "%" + query + "%"
+	rows, err := db.Query(`
+		WITH TotalCount AS (
+			SELECT COUNT(*) AS total FROM collections WHERE name ILIKE $1
+		)
+		SELECT 
+			c.id, 
+			c.admin_id, 
+			c.name, 
+			c.description, 
+			c.img, 
+			TotalCount.total
+		FROM collections c, TotalCount
+		WHERE c.name ILIKE $1
+		LIMIT $2 OFFSET $3
+	`, query, res, pageOffset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
+	defer rows.Close()
+	var collections []models.Collection
+	var total int
 	for rows.Next() {
 		var collection models.Collection
-		rows.Scan(&collection.Id, &collection.AdminId, &collection.Name, &collection.Description, &collection.Img)
-		if err := rows.Err(); err != nil {
-			return nil, err
+		if err := rows.Scan(&collection.Id, &collection.AdminId, &collection.Name, &collection.Description, &collection.Img, &total); err != nil {
+			return nil, 0, err
 		}
 		collections = append(collections, collection)
 	}
-	return collections, nil
+	maxPages := (total + res - 1) / res
+	return collections, maxPages, nil
 }
 
 func GetCollectionById(id string) (collection models.Collection, err error) {
