@@ -27,6 +27,7 @@ type GymDetails struct {
 }
 
 type GymPlans struct {
+	Id          string  `json:"id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Price       float64 `json:"price"`
@@ -35,6 +36,7 @@ type GymPlans struct {
 }
 
 type GymRoutines struct {
+	Id          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Img         string `json:"img"`

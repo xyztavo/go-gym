@@ -74,8 +74,8 @@ func SetGymUserByEmail(email string, adminId string) (status int, err error) {
 func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) {
 	rows, err := db.Query(`
 	SELECT g.name AS gym_name, g.description AS gym_description, 
-		g.location AS gym_location, g.number AS gym_number, g.img AS gym_image, p.name AS plan_name, p.description AS plan_description, 
-		p.price AS plan_price, p.duration AS plan_duration, p.img AS plan_image, r.name AS gym_routine_name, r.description AS gym_routine_description,
+		g.location AS gym_location, g.number AS gym_number, g.img AS gym_image, p.id AS plan_id, p.name AS plan_name, p.description AS plan_description, 
+		p.price AS plan_price, p.duration AS plan_duration, p.img AS plan_image, r.id AS gym_routine_id, r.name AS gym_routine_name, r.description AS gym_routine_description,
 		r.img AS routine_img
 		FROM users AS u 
 		LEFT JOIN gyms AS g ON u.gym_id = g.id 
@@ -93,15 +93,15 @@ func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) 
 	for rows.Next() {
 		var (
 			gymName, gymDescription, gymLocation, gymNumber, gymImage string
-			planName, planDescription, planImg                        sql.NullString
+			planId, planName, planDescription, planImg                sql.NullString
 			planPrice                                                 sql.NullFloat64
 			planDuration                                              sql.NullInt64
-			routineName, routineDescription, routineImg               sql.NullString
+			routineId, routineName, routineDescription, routineImg    sql.NullString
 		)
 
-		if err := rows.Scan(&gymName, &gymDescription, &gymLocation, &gymNumber, &gymImage,
+		if err := rows.Scan(&gymName, &gymDescription, &gymLocation, &gymNumber, &gymImage, &planId,
 			&planName, &planDescription, &planPrice, &planDuration, &planImg,
-			&routineName, &routineDescription, &routineImg); err != nil {
+			&routineId, &routineName, &routineDescription, &routineImg); err != nil {
 			return gymDetails, err
 		}
 		// Set gym-level details only once
@@ -117,6 +117,7 @@ func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) 
 		if planName.Valid {
 			if _, exists := plansMap[planName.String]; !exists {
 				plan := models.GymPlans{
+					Id:          planId.String,
 					Name:        planName.String,
 					Description: planDescription.String,
 					Price:       planPrice.Float64,
@@ -132,6 +133,7 @@ func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) 
 		if routineName.Valid {
 			if _, exists := routinesMap[routineName.String]; !exists {
 				routine := models.GymRoutines{
+					Id:          routineId.String,
 					Name:        routineName.String,
 					Description: routineDescription.String,
 					Img:         routineImg.String,
