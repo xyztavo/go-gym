@@ -103,8 +103,6 @@ func Migrate() error {
 	);
 	CREATE TABLE IF NOT EXISTS gyms_routines (
 	id VARCHAR(40) PRIMARY KEY,
-	name VARCHAR(40) UNIQUE NOT NULL,
-	description VARCHAR(200) NOT NULL,
 	routine_id VARCHAR(40) NOT NULL,
 	gym_id VARCHAR(40) NOT NULL,
 	FOREIGN KEY (routine_id) REFERENCES routines(id),

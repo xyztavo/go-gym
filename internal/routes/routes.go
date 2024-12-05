@@ -73,5 +73,5 @@ func GymAdminRouter(r chi.Router) {
 	r.Post("/gym/user/email", handlers.SetGymUserByEmail)
 	r.Get("/gym/users", handlers.GetGymUsers)
 	r.Patch("/gym/user/plan", handlers.SetUserPlan)
-	r.Post("/gym/routines", handlers.CreateGymRoutine)
+	r.Post("/gym/routines/{id}", handlers.CreateGymRoutine)
 }

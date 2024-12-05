@@ -4,24 +4,20 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/xyztavo/go-gym/internal/database"
-	"github.com/xyztavo/go-gym/internal/models"
 	"github.com/xyztavo/go-gym/internal/utils"
 )
 
 func CreateGymRoutine(w http.ResponseWriter, r *http.Request) {
 	id := utils.UserIdFromToken(r)
-	createdGymRoutineBody := new(models.CreateGymRoutine)
-	if err := utils.BindAndValidate(r, createdGymRoutineBody); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	routineId := chi.URLParam(r, "id")
 	user, err := database.GetUserById(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	createdGymRoutineId, err := database.CreateGymRoutine(*user.GymId, createdGymRoutineBody)
+	createdGymRoutineId, err := database.CreateGymRoutine(*user.GymId, routineId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
