@@ -127,6 +127,9 @@ func CheckIn(userId string) (daysUntilPlanExpires float64, err error) {
 	if err != nil {
 		return 0, errors.New("could not find user")
 	}
+	if user.PlanId == nil {
+		return 0, errors.New("user does not have a plan")
+	}
 	var plan models.Plan
 	err = db.QueryRow("SELECT * FROM plans WHERE id = $1", *user.PlanId).Scan(&plan.Id, &plan.GymId, &plan.Name, &plan.Description, &plan.Price, &plan.Duration, &plan.Img)
 	if err != nil {

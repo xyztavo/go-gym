@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/xyztavo/go-gym/internal/database"
 	"github.com/xyztavo/go-gym/internal/models"
 	"github.com/xyztavo/go-gym/internal/utils"
@@ -87,6 +88,21 @@ func GetGymUsers(w http.ResponseWriter, r *http.Request) {
 func CheckIn(w http.ResponseWriter, r *http.Request) {
 	idFromToken := utils.UserIdFromToken(r)
 	daysUntilPlanExpires, err := database.CheckIn(idFromToken)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	m := map[string]any{
+		"message":              "check in approved",
+		"daysUntilPlanExpires": daysUntilPlanExpires,
+	}
+	b, _ := json.Marshal(m)
+	w.Write(b)
+}
+
+func CheckInByUserId(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	daysUntilPlanExpires, err := database.CheckIn(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
