@@ -17,15 +17,15 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	newUserId, err := database.CreateUser(createUser)
+	newUserId, statusCode, err := database.CreateUser(createUser)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), statusCode)
 		return
 	}
 	jwt, _ := utils.CreateUserJwt(newUserId)
 	m := map[string]string{"message": "user created with ease", "token": jwt}
 	b, _ := json.Marshal(m)
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(statusCode)
 	w.Write(b)
 }
 func GetUserGym(w http.ResponseWriter, r *http.Request) {

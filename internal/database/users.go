@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"net/http"
+	"strings"
 	"time"
 
 	gonanoid "github.com/matoous/go-nanoid/v2"
@@ -11,14 +13,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func CreateUser(user *models.CreateUser) (id string, err error) {
+func CreateUser(user *models.CreateUser) (id string, statuscode int, err error) {
 	id, _ = gonanoid.New()
 	HashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
 	_, err = db.Exec(`INSERT INTO users (id, name, email, role, password) VALUES ($1, $2, $3, $4, $5)`, id, &user.Name, &user.Email, "regular", HashedPassword)
 	if err != nil {
-		return "", err
+		if strings.Contains(err.Error(), "duplicate key value") && strings.Contains(err.Error(), "users_email_key") {
+			return "", http.StatusConflict, errors.New("email already exists")
+		}
+		return "", http.StatusInternalServerError, err
 	}
-	return id, nil
+	return "", http.StatusCreated, nil
 }
 
 func GetUserByEmail(email string) (user models.User, err error) {
@@ -69,7 +74,7 @@ func GetUserGym(userId string) (gym models.Gym, err error) {
 }
 
 func SetUserPlan(setUserPlan *models.SetUserPlan) (err error) {
-	user, err := GetUserById(setUserPlan.UserId)
+	user, err := GetUserByEmail(setUserPlan.Email)
 	if err != nil {
 		return err
 	}
@@ -85,20 +90,20 @@ func SetUserPlan(setUserPlan *models.SetUserPlan) (err error) {
 		timeComparison := dateUntilExpires.Compare(time.Now())
 		// if plan has expired, set the current timestamp to be the last payment
 		if timeComparison < 0 {
-			_, err = db.Exec("UPDATE users SET plan_id = $1, last_payment = current_timestamp WHERE id = $2", setUserPlan.PlanId, setUserPlan.UserId)
+			_, err = db.Exec("UPDATE users SET plan_id = $1, last_payment = current_timestamp WHERE email = $2", setUserPlan.PlanId, setUserPlan.Email)
 			if err != nil {
 				return err
 			}
 			return nil
 		}
 		// if plan has not expired yet, set last payment the exact date that it will expire
-		_, err = db.Exec("UPDATE users SET plan_id = $1, last_payment = $2 WHERE id = $3", setUserPlan.PlanId, dateUntilExpires, setUserPlan.UserId)
+		_, err = db.Exec("UPDATE users SET plan_id = $1, last_payment = $2 WHERE email = $3", setUserPlan.PlanId, dateUntilExpires, setUserPlan.Email)
 		if err != nil {
 			return err
 		}
 		return nil
 	} else {
-		_, err = db.Exec("UPDATE users SET plan_id = $1, last_payment = current_timestamp WHERE id = $2", setUserPlan.PlanId, setUserPlan.UserId)
+		_, err = db.Exec("UPDATE users SET plan_id = $1, last_payment = current_timestamp WHERE email = $2", setUserPlan.PlanId, setUserPlan.Email)
 		if err != nil {
 			return err
 		}
@@ -136,7 +141,6 @@ func CheckIn(userId string) (daysUntilPlanExpires float64, err error) {
 		return 0, err
 	}
 	dateUntilExpires := user.LastPayment.AddDate(0, 0, plan.Duration+1)
-	fmt.Println(dateUntilExpires)
 	timeComparison := dateUntilExpires.Compare(time.Now())
 	daysUntilExpiration := math.Floor(time.Until(dateUntilExpires).Hours() / 24)
 	if timeComparison < 0 {

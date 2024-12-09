@@ -21,7 +21,7 @@ type CreatePlan struct {
 }
 
 type SetUserPlan struct {
-	UserId string `json:"userId" validate:"required"`
+	Email  string `json:"email" validate:"required"`
 	PlanId string `json:"planId" validate:"required"`
 }
 
