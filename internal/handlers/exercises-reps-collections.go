@@ -68,3 +68,13 @@ func GetExercisesRepsCollectionsByCollectionId(w http.ResponseWriter, r *http.Re
 	b, _ := json.Marshal(exercisesReps)
 	w.Write(b)
 }
+
+func DeleteExercisesRepsCollection(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
+	id := chi.URLParam(r, "id")
+	if err := database.DeleteExercisesRepsCollection(idFromToken, id); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}

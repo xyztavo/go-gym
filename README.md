@@ -7,5 +7,7 @@
 - [x] users has a route that gets all info about the gym in one route (plans, routines...)
 - [x] user route to get info about the user plan (active plan, lastpayment, when plan expires....)
 - [x] give plans, routines, collections img attr in db and refactor everything(pain)
+- [x] delete exercises-reps-collections by id
+- [ ] Delete routine collections
 
 - [ ] frontend 

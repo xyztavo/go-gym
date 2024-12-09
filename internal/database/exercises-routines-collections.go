@@ -72,15 +72,22 @@ func GetExercisesRepsCollection() (exercisesRoutinesCollectionsRoutines []models
 		if err := rows.Err(); err != nil {
 			return nil, err
 		}
-		rows.Scan(&exerciseRoutineCollectionRoutine.Id, &exerciseRoutineCollectionRoutine.ExerciseRepsCollectionId, &exerciseRoutineCollectionRoutine.ExerciseId, &exerciseRoutineCollectionRoutine.Reps, &exerciseRoutineCollectionRoutine.Sets)
+		rows.Scan(&exerciseRoutineCollectionRoutine.Id, &exerciseRoutineCollectionRoutine.ExerciseRepsCollectionId, &exerciseRoutineCollectionRoutine.AdminId, &exerciseRoutineCollectionRoutine.ExerciseId, &exerciseRoutineCollectionRoutine.Reps, &exerciseRoutineCollectionRoutine.Sets)
 		exercisesRoutinesCollectionsRoutines = append(exercisesRoutinesCollectionsRoutines, exerciseRoutineCollectionRoutine)
 	}
 	return exercisesRoutinesCollectionsRoutines, nil
 }
 
+func GetExercisesRepsCollectionById(id string) (exerciseRepsCollection models.ExerciseRepsCollection, err error) {
+	err = db.QueryRow("SELECT * FROM exercises_reps_collections WHERE id = $1", id).Scan(&exerciseRepsCollection.Id, &exerciseRepsCollection.AdminId, &exerciseRepsCollection.ExerciseRepsCollectionId, &exerciseRepsCollection.ExerciseId, &exerciseRepsCollection.Reps, &exerciseRepsCollection.Sets)
+	if err != nil {
+		return exerciseRepsCollection, err
+	}
+	return exerciseRepsCollection, nil
+}
 func GetExercisesRepsCollectionsByCollectionId(collectionId string) (exercisesRepsCollections []models.ExerciseRepCollectionFormatted, err error) {
 	rows, err := db.Query(`
-	SELECT e.id, e.name, e.description, e.gif, erc.reps, erc.sets 
+	SELECT erc.id, e.name, e.description, e.gif, erc.reps, erc.sets 
 		FROM collections AS c 
 		LEFT JOIN exercises_reps_collections AS erc 
 		LEFT JOIN exercises AS e ON erc.exercise_id = e.id
@@ -97,4 +104,19 @@ func GetExercisesRepsCollectionsByCollectionId(collectionId string) (exercisesRe
 		exercisesRepsCollections = append(exercisesRepsCollections, exerciseRepsCollection)
 	}
 	return exercisesRepsCollections, nil
+}
+
+func DeleteExercisesRepsCollection(adminId string, id string) error {
+	exerciseRepsCollection, err := GetExercisesRepsCollectionById(id)
+	if err != nil {
+		return err
+	}
+	if exerciseRepsCollection.AdminId != adminId {
+		return errors.New("user is not the collection admin")
+	}
+	_, err = db.Exec("DELETE FROM exercises_reps_collections WHERE id = $1", id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
