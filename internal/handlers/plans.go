@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/xyztavo/go-gym/internal/database"
 	"github.com/xyztavo/go-gym/internal/models"
 	"github.com/xyztavo/go-gym/internal/utils"
@@ -63,6 +64,18 @@ func SetUserPlan(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	m := map[string]string{"message": "user plan updated with ease!"}
+	b, _ := json.Marshal(m)
+	w.Write(b)
+}
+
+func DeleteGymPlan(w http.ResponseWriter, r *http.Request) {
+	planId := chi.URLParam(r, "id")
+	err := database.DeleteGymPlan(planId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	m := map[string]string{"message": "deleted plan with ease!"}
 	b, _ := json.Marshal(m)
 	w.Write(b)
 }

@@ -71,6 +71,7 @@ func GymAdminRouter(r chi.Router) {
 	r.Get("/gym/admin/test-auth", handlers.TestAuth)
 	r.Post("/gym", handlers.CreateGym)
 	r.Post("/gym/plans", handlers.CreatePlan)
+	r.Delete("/gym/plans/{id}", handlers.DeleteGymPlan)
 	r.Post("/gym/user", handlers.SetGymUser)
 	r.Post("/gym/user/email", handlers.SetGymUserByEmail)
 	r.Get("/gym/users", handlers.GetGymUsers)

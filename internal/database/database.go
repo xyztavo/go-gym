@@ -56,7 +56,7 @@ func Migrate() error {
 	last_payment TIMESTAMP,
 	created_at TIMESTAMP DEFAULT NOW(),
 	FOREIGN KEY (gym_id) REFERENCES gyms(id),
-	FOREIGN KEY (plan_id) REFERENCES plans(id)
+	FOREIGN KEY (plan_id) REFERENCES plans(id) ON DELETE SET NULL
 	);
 	ALTER TABLE gyms ADD FOREIGN KEY (admin_id) REFERENCES users(id);
 	CREATE TABLE IF NOT EXISTS exercises (
