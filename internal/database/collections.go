@@ -58,7 +58,7 @@ func GetCollectionById(id string) (collection models.Collection, err error) {
 
 func GetCollectionsByRoutineId(routineId string) (collections []models.Collection, err error) {
 	rows, err := db.Query(`
-	SELECT c.id, c.admin_id, c.name, c.description, c.img FROM routines_collections AS rc 
+	SELECT rc.id, c.admin_id, c.name, c.description, c.img FROM routines_collections AS rc 
 		LEFT JOIN collections AS c ON rc.collection_id = c.id WHERE rc.routine_id = $1`, routineId)
 	if err != nil {
 		return nil, err

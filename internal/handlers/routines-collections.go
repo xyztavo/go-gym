@@ -26,3 +26,20 @@ func CreateRoutineCollection(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Write(b)
 }
+
+func DeleteRoutineFromCollection(w http.ResponseWriter, r *http.Request) {
+	routineId := chi.URLParam(r, "routineId")
+	routineCollectionId := chi.URLParam(r, "routineCollectionId")
+	idFromToken := utils.UserIdFromToken(r)
+	err := database.DeleteRoutineFromCollection(idFromToken, routineId, routineCollectionId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	m := map[string]string{
+		"message": "deleted routine from collection with ease!",
+	}
+	b, _ := json.Marshal(m)
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
+}

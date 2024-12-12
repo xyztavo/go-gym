@@ -22,3 +22,18 @@ func CreateRoutineCollection(adminId string, routineId string, collectionId stri
 	}
 	return createdRoutineExerciseRepsCollectionId, nil
 }
+
+func DeleteRoutineFromCollection(adminId string, routineId string, routineCollectionId string) error {
+	routine, err := GetRoutineById(routineId)
+	if err != nil {
+		return err
+	}
+	if adminId != routine.AdminId {
+		return errors.New("user is not routine admin")
+	}
+	_, err = db.Exec("DELETE FROM routines_collections WHERE routine_id = $1 AND id = $2", routineId, routineCollectionId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
