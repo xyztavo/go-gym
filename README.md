@@ -9,5 +9,26 @@
 - [x] give plans, routines, collections img attr in db and refactor everything(pain)
 - [x] delete exercises-reps-collections by id
 - [x] Delete routine collections
+- [ ] clean up with exercises that really matter in seed
+- [ ] seed with collections 
+- [ ] seed with routines
+- [ ] frontend (80% done)
 
-- [ ] frontend 
+
+## Usage
+install dependencies
+``` bash
+go mod tidy
+```
+for the first time you load up the server, you need to migrate the database
+```bash
+go run ./cmd/api migrate
+```
+optional - seed database with stuff (exercises, collections, routines)
+```bash
+go run ./cmd/api seed
+```
+run the server
+```bash
+go run ./cmd/api
+```

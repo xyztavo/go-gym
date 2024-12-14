@@ -61,7 +61,7 @@ func Migrate() error {
 	ALTER TABLE gyms ADD FOREIGN KEY (admin_id) REFERENCES users(id);
 	CREATE TABLE IF NOT EXISTS exercises (
 	id VARCHAR(40) PRIMARY KEY,
-	name VARCHAR(40) UNIQUE NOT NULL,
+	name VARCHAR(100) UNIQUE NOT NULL,
 	description VARCHAR(200) NOT NULL,
 	gif VARCHAR(200) NOT NULL
 	);
