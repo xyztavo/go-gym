@@ -19,7 +19,7 @@ func Seed() error {
 	values := []string{}
 	args := []interface{}{}
 	placeholderIdx := 1
-	for _, exercise := range Exercises() {
+	for _, exercise := range SeedExercises() {
 		values = append(values, fmt.Sprintf("($%d, $%d, $%d, $%d)", placeholderIdx, placeholderIdx+1, placeholderIdx+2, placeholderIdx+3))
 		args = append(args, exercise.Id, exercise.Name, exercise.Description, exercise.Gif)
 		placeholderIdx += 4
@@ -32,7 +32,7 @@ func Seed() error {
 	return nil
 }
 
-func Exercises() []models.Exercise {
+func SeedExercises() []models.Exercise {
 	return []models.Exercise{
 		{
 			Id:          "0001",
