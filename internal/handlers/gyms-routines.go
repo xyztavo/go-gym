@@ -50,3 +50,13 @@ func GetUserGymRoutines(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(gymRoutines)
 	w.Write(b)
 }
+
+func DeleteGymRoutine(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	err := database.DeleteGymRoutine(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}

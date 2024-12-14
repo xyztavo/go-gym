@@ -14,6 +14,15 @@ type Collection struct {
 	Img         string `json:"img"`
 }
 
+type RoutineCollection struct {
+	Id                  string `json:"id"`
+	RoutineCollectionId string `json:"routineCollectionId"`
+	AdminId             string `json:"adminId"`
+	Name                string `json:"name"`
+	Description         string `json:"description"`
+	Img                 string `json:"img"`
+}
+
 type GetCollectionsByRoutineId struct {
 	RoutineId string `json:"routineId" validate:"required"`
 }

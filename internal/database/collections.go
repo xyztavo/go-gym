@@ -56,16 +56,16 @@ func GetCollectionById(id string) (collection models.Collection, err error) {
 	return collection, nil
 }
 
-func GetCollectionsByRoutineId(routineId string) (collections []models.Collection, err error) {
+func GetCollectionsByRoutineId(routineId string) (collections []models.RoutineCollection, err error) {
 	rows, err := db.Query(`
-	SELECT rc.id, c.admin_id, c.name, c.description, c.img FROM routines_collections AS rc 
+	SELECT c.id, rc.id, c.admin_id, c.name, c.description, c.img FROM routines_collections AS rc 
 		LEFT JOIN collections AS c ON rc.collection_id = c.id WHERE rc.routine_id = $1`, routineId)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		var collection models.Collection
-		rows.Scan(&collection.Id, &collection.AdminId, &collection.Name, &collection.Description, &collection.Img)
+		var collection models.RoutineCollection
+		rows.Scan(&collection.Id, &collection.RoutineCollectionId, &collection.AdminId, &collection.Name, &collection.Description, &collection.Img)
 		if err := rows.Err(); err != nil {
 			return nil, err
 		}

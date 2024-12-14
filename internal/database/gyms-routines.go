@@ -16,7 +16,7 @@ func CreateGymRoutine(gymId string, routineId string) (createdGymRoutineId strin
 }
 
 func GetGymRoutines(gymId string) (gymRoutines []models.Routine, err error) {
-	rows, err := db.Query("SELECT r.id, r.name, r.description, r.img FROM gyms_routines AS gr LEFT JOIN routines AS r ON gr.routine_id = r.id WHERE gym_id = $1", gymId)
+	rows, err := db.Query("SELECT gr.id, r.name, r.description, r.img FROM gyms_routines AS gr LEFT JOIN routines AS r ON gr.routine_id = r.id WHERE gym_id = $1", gymId)
 	if err != nil {
 		return nil, err
 	}
@@ -31,4 +31,9 @@ func GetGymRoutines(gymId string) (gymRoutines []models.Routine, err error) {
 		gymRoutines = append(gymRoutines, gymRoutine)
 	}
 	return gymRoutines, nil
+}
+
+func DeleteGymRoutine(id string) (err error) {
+	_, err = db.Exec("DELETE FROM gyms_routines WHERE id = $1", id)
+	return err
 }
