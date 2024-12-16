@@ -5,9 +5,7 @@ import (
 	"log"
 
 	_ "github.com/lib/pq"
-	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/xyztavo/go-gym/internal/configs"
-	"golang.org/x/crypto/bcrypt"
 )
 
 var db *sql.DB
@@ -21,9 +19,6 @@ func init() {
 }
 
 func Migrate() error {
-	user := configs.GetAdminInfo()
-	id, _ := gonanoid.New()
-	HashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
 	// Migrate tables
 	_, err := db.Exec(`
 	CREATE TABLE IF NOT EXISTS gyms (
@@ -114,9 +109,5 @@ func Migrate() error {
 	if err != nil {
 		return err
 	}
-	// create admin user
-	db.Exec(`
-	INSERT INTO users (id, name, email, role, password) VALUES ($1, $2, $3, 'admin', $4);
-	`, id, user.Name, user.Email, HashedPassword)
 	return nil
 }
