@@ -22,7 +22,7 @@ func CreatePlan(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
-	createdPlanId, err := database.CreatePlan(gym.Id, planBody)
+	createdPlanId, err := database.CreatePlan(gym.Id, idFromToken, planBody)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -34,6 +34,17 @@ func CreatePlan(w http.ResponseWriter, r *http.Request) {
 	}
 	b, _ := json.Marshal(m)
 	w.WriteHeader(http.StatusCreated)
+	w.Write(b)
+}
+
+func GetPlanById(w http.ResponseWriter, r *http.Request) {
+	planId := chi.URLParam(r, "id")
+	plan, err := database.GetPlanById(planId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	b, _ := json.Marshal(plan)
 	w.Write(b)
 }
 
@@ -68,9 +79,28 @@ func SetUserPlan(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func DeleteGymPlan(w http.ResponseWriter, r *http.Request) {
+func UpdatePlan(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
 	planId := chi.URLParam(r, "id")
-	err := database.DeleteGymPlan(planId)
+	planBody := new(models.UpdatePlan)
+	if err := utils.BindAndValidate(r, planBody); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	err := database.UpdatePlan(planId, idFromToken, planBody)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	m := map[string]string{"message": "updated plan with ease!"}
+	b, _ := json.Marshal(m)
+	w.Write(b)
+}
+
+func DeleteGymPlan(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
+	planId := chi.URLParam(r, "id")
+	err := database.DeleteGymPlan(planId, idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

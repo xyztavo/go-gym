@@ -38,6 +38,7 @@ func Migrate() error {
 	CREATE TABLE IF NOT EXISTS plans (
 	id VARCHAR(40) PRIMARY KEY,
 	gym_id VARCHAR(40) NOT NULL,
+	admin_id VARCHAR(40) NOT NULL,
 	name VARCHAR(40) UNIQUE NOT NULL,
 	description VARCHAR(200) NOT NULL,
 	price DOUBLE PRECISION NOT NULL,
@@ -59,6 +60,7 @@ func Migrate() error {
 	FOREIGN KEY (plan_id) REFERENCES plans(id) ON DELETE SET NULL
 	);
 	ALTER TABLE gyms ADD FOREIGN KEY (admin_id) REFERENCES users(id);
+	ALTER TABLE plans ADD FOREIGN KEY (admin_id) REFERENCES users(id);
 	CREATE TABLE IF NOT EXISTS exercises (
 	id VARCHAR(40) PRIMARY KEY,
 	name VARCHAR(100) UNIQUE NOT NULL,

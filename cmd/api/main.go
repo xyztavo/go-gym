@@ -15,7 +15,7 @@ import (
 func main() {
 	HandleArgs()
 	r := routes.SetupRoutes()
-	fmt.Printf("\n\x1b[32m%s\x1b[0m\n\x1b[33mhttp://localhost%s\x1b[0m", "Ｇｏ Ｇｙｍ 💪", configs.GetPort())
+	fmt.Printf("\x1b[32m%s\x1b[0m\n\x1b[33mhttp://localhost%s\x1b[0m", "💪 | Go Gym is running!", configs.GetPort())
 	http.ListenAndServe(configs.GetPort(), r)
 }
 
