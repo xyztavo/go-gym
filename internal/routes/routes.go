@@ -43,7 +43,6 @@ func AuthRouter(r chi.Router) {
 	r.Get("/routines/{id}/collections", handlers.GetCollectionsByRoutineId)
 	r.Get("/exercises-reps/collections", handlers.GetExercisesRepsCollections)
 	r.Get("/routines", handlers.GetRoutines)
-	r.Get("/routines/jet", handlers.GetRoutinesJet)
 }
 
 func AdminRouter(r chi.Router) {

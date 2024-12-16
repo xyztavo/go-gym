@@ -45,6 +45,6 @@ func GetExercises(query string, page int) ([]models.Exercise, int, error) {
 		}
 		exercises = append(exercises, exercise)
 	}
-	maxPages := (total + res - 1) / res
+	maxPages := total / res
 	return exercises, maxPages, nil
 }

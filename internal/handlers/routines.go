@@ -65,25 +65,3 @@ func GetUserRoutines(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(routines)
 	w.Write(b)
 }
-
-func GetRoutinesJet(w http.ResponseWriter, r *http.Request) {
-	query := r.URL.Query().Get("query")
-	page := r.URL.Query().Get("page")
-	intPage, err := strconv.Atoi(page)
-	if err != nil {
-		http.Error(w, "Invalid page parameter: "+err.Error(), http.StatusBadRequest)
-		return
-	}
-	routines, maxPages, err := database.GetRoutinesJet(query, int64(intPage))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	response := map[string]interface{}{
-		"routines": routines,
-		"maxPages": maxPages,
-		"page":     intPage,
-	}
-	b, _ := json.Marshal(response)
-	w.Write(b)
-}
