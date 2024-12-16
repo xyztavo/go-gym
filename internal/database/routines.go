@@ -1,10 +1,7 @@
 package database
 
 import (
-	. "github.com/go-jet/jet/v2/postgres"
 	gonanoid "github.com/matoous/go-nanoid/v2"
-	"github.com/xyztavo/go-gym/dbname/public/model"
-	. "github.com/xyztavo/go-gym/dbname/public/table"
 	"github.com/xyztavo/go-gym/internal/models"
 )
 
@@ -75,38 +72,4 @@ func GetUserRoutines(adminId string) (routines []models.Routine, err error) {
 		routines = append(routines, routine)
 	}
 	return routines, nil
-}
-func ILIKE(lhs, rhs StringExpression) BoolExpression {
-	return BoolExp(CustomExpression(lhs, Token("ILIKE"), rhs))
-}
-func GetRoutinesJet(query string, page int64) (routines []model.Routines, maxPages int64, err error) {
-	var res int64 = 20
-	pageOffset := res * page
-	queryPattern := "%" + query + "%"
-	stmt := SELECT(
-		Routines.AllColumns,
-		Raw("COUNT(*) OVER() AS total_count"),
-	).FROM(
-		Routines,
-	).WHERE(
-		ILIKE(Routines.Name, String(queryPattern)),
-	).LIMIT(res).OFFSET(pageOffset)
-	type RoutineWithCount struct {
-		model.Routines
-		TotalCount int64 `db:"total_count"`
-	}
-	var dest []RoutineWithCount
-	err = stmt.Query(db, &dest)
-	if err != nil {
-		return nil, 0, err
-	}
-	if len(dest) > 0 {
-		total := dest[0].TotalCount
-		maxPages = (total + res - 1) / res
-	}
-	routines = make([]model.Routines, len(dest))
-	for i, row := range dest {
-		routines[i] = row.Routines
-	}
-	return routines, maxPages, nil
 }

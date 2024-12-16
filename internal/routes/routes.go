@@ -70,6 +70,7 @@ func GymAdminRouter(r chi.Router) {
 	r.Use(middlewares.GymAdminAuthMiddleware)
 	r.Get("/gym/admin/test-auth", handlers.TestAuth)
 	r.Post("/gym", handlers.CreateGym)
+	r.Put("/gym", handlers.UpdateGym)
 	r.Post("/gym/plans", handlers.CreatePlan)
 	r.Delete("/gym/plans/{id}", handlers.DeleteGymPlan)
 	r.Post("/gym/user", handlers.SetGymUser)

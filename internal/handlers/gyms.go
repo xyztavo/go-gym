@@ -77,3 +77,21 @@ func GetUserGymDetails(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(gymDetails)
 	w.Write(b)
 }
+
+func UpdateGym(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
+	updateGymBody := new(models.UpdateGym)
+	if err := utils.BindAndValidate(r, updateGymBody); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	statusCode, err := database.UpdateGym(idFromToken, updateGymBody)
+	if err != nil {
+		http.Error(w, err.Error(), statusCode)
+		return
+	}
+	m := map[string]string{"message": "gym updated with ease"}
+	b, _ := json.Marshal(m)
+	w.WriteHeader(statusCode)
+	w.Write(b)
+}

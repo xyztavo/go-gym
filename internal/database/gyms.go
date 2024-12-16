@@ -151,3 +151,15 @@ func GetUserGymDetails(userId string) (gymDetails models.GymDetails, err error) 
 
 	return gymDetails, nil
 }
+
+func UpdateGym(adminId string, gym *models.UpdateGym) (status int, err error) {
+	_, err = GetUserGym(adminId)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	_, err = db.Exec("UPDATE gyms SET name = $1, description = $2, location = $3, number = $4, img = $5 WHERE admin_id = $6", gym.Name, gym.Description, gym.Location, gym.Number, gym.Img, adminId)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusOK, nil
+}

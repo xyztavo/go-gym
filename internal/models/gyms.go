@@ -41,3 +41,11 @@ type GymRoutines struct {
 	Description string `json:"description"`
 	Img         string `json:"img"`
 }
+
+type UpdateGym struct {
+	Name        string `json:"name" validate:"required"`
+	Description string `json:"description" validate:"required"`
+	Location    string `json:"location" validate:"required"`
+	Number      string `json:"number" validate:"required"`
+	Img         string `json:"img" validate:"required"`
+}

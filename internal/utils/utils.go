@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	. "github.com/go-jet/jet/v2/postgres"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/xyztavo/go-gym/internal/configs"
@@ -57,4 +58,8 @@ func UserIdFromToken(r *http.Request) (userId string) {
 		return ""
 	}
 	return claims.Id
+}
+
+func ILIKE(lhs, rhs StringExpression) BoolExpression {
+	return BoolExp(CustomExpression(lhs, Token("ILIKE"), rhs))
 }
