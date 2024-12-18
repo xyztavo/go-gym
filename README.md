@@ -3,6 +3,10 @@ install dependencies
 ``` bash
 go mod tidy
 ```
+start up the database
+```bash
+docker compose up -d
+```
 for the first time you load up the server, you need to migrate the database
 ```bash
 go run ./cmd/api migrate
@@ -30,7 +34,7 @@ go run ./cmd/api
 - [x] Delete routine collections
 - [x] clean up with exercises that really matter in seed
 - [x] seed with collections 
-- [ ] do also a back and bi day collection and a leg day collection and a ABC routine in seed
-- [ ] seed with routines
+- [x] do also a back and bi day collection and a leg day collection and a ABC routine in seed
+- [x] seed with routines
 - [ ] frontend (80% done)
 
