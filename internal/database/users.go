@@ -81,7 +81,7 @@ func SetUserPlan(setUserPlan *models.SetUserPlan) (err error) {
 	// if user already has paid
 	if user.LastPayment != nil {
 		var plan models.Plan
-		err = db.QueryRow("SELECT * FROM plans WHERE id = $1", *user.PlanId).Scan(&plan.Id, &plan.GymId, &plan.Name, &plan.Description, &plan.Price, &plan.Duration, &plan.Img)
+		err = db.QueryRow("SELECT * FROM plans WHERE id = $1", *user.PlanId).Scan(&plan.Id, &plan.GymId, &plan.AdminId, &plan.Name, &plan.Description, &plan.Price, &plan.Duration, &plan.Img)
 		if err != nil {
 			return err
 		}
