@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/gookit/validate"
 	"github.com/xyztavo/go-gym/internal/configs"
 	"github.com/xyztavo/go-gym/internal/models"
 )
@@ -15,9 +15,9 @@ func BindAndValidate(r *http.Request, structs any) error {
 	if err := json.NewDecoder(r.Body).Decode(&structs); err != nil {
 		return err
 	}
-	validate := validator.New()
-	if err := validate.Struct(structs); err != nil {
-		return err
+	v := validate.Struct(structs)
+	if !v.Validate() {
+		return v.Errors
 	}
 	return nil
 }
