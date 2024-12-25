@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/xyztavo/go-gym/internal/database"
 	"github.com/xyztavo/go-gym/internal/models"
 	"github.com/xyztavo/go-gym/internal/utils"
@@ -63,5 +64,45 @@ func GetUserRoutines(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	b, _ := json.Marshal(routines)
+	w.Write(b)
+}
+
+func GetRoutineById(w http.ResponseWriter, r *http.Request) {
+	routineId := chi.URLParam(r, "id")
+	routine, err := database.GetRoutineById(routineId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	b, _ := json.Marshal(routine)
+	w.Write(b)
+}
+func UpdateRoutine(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
+	routineId := chi.URLParam(r, "id")
+	routineBody := new(models.UpdateRoutine)
+	if err := utils.BindAndValidate(r, routineBody); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	err := database.UpdateRoutine(routineId, idFromToken, routineBody)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	m := map[string]string{"message": "updated routine with ease!"}
+	b, _ := json.Marshal(m)
+	w.Write(b)
+}
+func DeleteRoutine(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
+	routineId := chi.URLParam(r, "id")
+	err := database.DeleteRoutine(routineId, idFromToken)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	m := map[string]string{"message": "deleted routine with ease!"}
+	b, _ := json.Marshal(m)
 	w.Write(b)
 }

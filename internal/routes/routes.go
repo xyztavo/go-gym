@@ -43,6 +43,7 @@ func AuthRouter(r chi.Router) {
 	r.Get("/routines/{id}/collections", handlers.GetCollectionsByRoutineId)
 	r.Get("/exercises-reps/collections", handlers.GetExercisesRepsCollections)
 	r.Get("/routines", handlers.GetRoutines)
+	r.Get("/routines/{id}", handlers.GetRoutineById)
 }
 
 func AdminRouter(r chi.Router) {
@@ -62,6 +63,8 @@ func AdminOrGymAdminRouter(r chi.Router) {
 	r.Delete("/exercises-reps/collections/{id}", handlers.DeleteExercisesRepsCollection)
 	r.Post("/exercises-reps/collections/multiple", handlers.CreateMultipleExercisesRepCollection)
 	r.Post("/routines", handlers.CreateRoutine)
+	r.Put("/routines/{id}", handlers.UpdateRoutine)
+	r.Delete("/routines/{id}", handlers.DeleteRoutine)
 	r.Post("/routines/{routineId}/collections/{collectionId}", handlers.CreateRoutineCollection)
 	r.Delete("/routines/{routineId}/collections/{routineCollectionId}", handlers.DeleteRoutineFromCollection)
 }
