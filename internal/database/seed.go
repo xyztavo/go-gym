@@ -27,15 +27,16 @@ func Seed() error {
 	if err != nil {
 		return err
 	}
-	query := "INSERT INTO exercises (id, name, description, gif) VALUES "
+	query := "INSERT INTO exercises (id, admin_id, name, description, gif) VALUES "
 	values := []string{}
 	args := []interface{}{}
 	placeholderIdx := 1
 	for _, exercise := range SeedExercises() {
-		values = append(values, fmt.Sprintf("($%d, $%d, $%d, $%d)", placeholderIdx, placeholderIdx+1, placeholderIdx+2, placeholderIdx+3))
-		args = append(args, exercise.Id, exercise.Name, exercise.Description, exercise.Gif)
-		placeholderIdx += 4
+		values = append(values, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d)", placeholderIdx, placeholderIdx+1, placeholderIdx+2, placeholderIdx+3, placeholderIdx+4))
+		args = append(args, exercise.Id, adminId, exercise.Name, exercise.Description, exercise.Gif)
+		placeholderIdx += 5
 	}
+
 	query += strings.Join(values, ", ") + " ON CONFLICT (id) DO NOTHING"
 	_, err = db.Exec(query, args...)
 	if err != nil {
