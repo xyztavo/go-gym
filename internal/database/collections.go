@@ -1,6 +1,8 @@
 package database
 
 import (
+	"errors"
+
 	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/xyztavo/go-gym/internal/models"
 )
@@ -88,4 +90,31 @@ func GetAdminCollections(adminId string) (collections []models.Collection, err e
 		collections = append(collections, collection)
 	}
 	return collections, nil
+}
+
+func DeleteCollection(adminId string, id string) error {
+	collection, err := GetCollectionById(id)
+	if err != nil {
+		return err
+	}
+	if adminId != collection.AdminId {
+		return errors.New("user is not the collection admin")
+	}
+	_, err = db.Exec("DELETE FROM collections WHERE id = $1", id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateCollection(adminId string, id string, collection *models.UpdateCollection) error {
+	collectionById, err := GetCollectionById(id)
+	if err != nil {
+		return err
+	}
+	if adminId != collectionById.AdminId {
+		return errors.New("user is not the collection admin")
+	}
+	_, err = db.Exec("UPDATE collections SET name = $1, description = $2, img = $3 WHERE id = $4", collection.Name, collection.Description, collection.Img, id)
+	return err
 }

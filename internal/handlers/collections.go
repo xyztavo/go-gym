@@ -77,3 +77,45 @@ func GetCollectionsByRoutineId(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(collections)
 	w.Write(b)
 }
+
+func GetCollectionById(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	collection, err := database.GetCollectionById(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	b, _ := json.Marshal(collection)
+	w.Write(b)
+}
+
+func UpdateCollection(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
+	collectionId := chi.URLParam(r, "id")
+	collectionBody := new(models.UpdateCollection)
+	if err := utils.BindAndValidate(r, collectionBody); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	err := database.UpdateCollection(idFromToken, collectionId, collectionBody)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	m := map[string]string{"message": "updated collection with ease!"}
+	b, _ := json.Marshal(m)
+	w.Write(b)
+}
+
+func DeleteCollection(w http.ResponseWriter, r *http.Request) {
+	idFromToken := utils.UserIdFromToken(r)
+	collectionId := chi.URLParam(r, "id")
+	err := database.DeleteCollection(idFromToken, collectionId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	m := map[string]string{"message": "deleted collection with ease!"}
+	b, _ := json.Marshal(m)
+	w.Write(b)
+}
