@@ -34,7 +34,7 @@ jobs:
           tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_c1208da7f5fb465880f9e38379192d9e }}/ustavo/go-gym:${{ github.sha }}
           file: ./Dockerfile
 
-    deploy:
+  deploy:
       runs-on: ubuntu-latest
       needs: build
       environment:
