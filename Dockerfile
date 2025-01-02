@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.22-bookworm
+FROM golang:1.22-bookworm as builder
 
 # Set destination for COPY
 WORKDIR /app
@@ -14,15 +14,28 @@ RUN go mod download
 COPY . ./
 
 # Build
-RUN ls -la /app
-RUN CGO_ENABLED=0 GOOS=linux go build -o /docker-gs-ping ./cmd/api
+RUN CGO_ENABLED=0 GOOS=linux  go build -o /docker-gs-ping ./cmd/api
+
+
+# deployment image
+FROM alpine:latest  
+RUN apk --no-cache add ca-certificates
+
+
+WORKDIR /root/
+COPY --from=builder /docker-gs-ping /docker-gs-ping
+
+# Copy the .env file
+COPY .env /root/.env
+
+CMD [ "/docker-gs-ping" ]
+
+EXPOSE 8000
 
 # Optional:
 # To bind to a TCP port, runtime parameters must be supplied to the docker command.
 # But we can document in the Dockerfile what ports
 # the application is going to listen on by default.
 # https://docs.docker.com/reference/dockerfile/#expose
-EXPOSE 8000
 
 # Run
-CMD ["/docker-gs-ping"]
