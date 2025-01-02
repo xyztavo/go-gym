@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"fmt"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/xyztavo/go-gym/internal/configs"
@@ -10,6 +12,7 @@ import (
 
 func SetupRoutes() *chi.Mux {
 	r := chi.NewRouter()
+	fmt.Println(configs.GetAllowedOrigins())
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: configs.GetAllowedOrigins(),
 		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
