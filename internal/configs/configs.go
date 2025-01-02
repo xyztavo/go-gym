@@ -1,7 +1,6 @@
 package configs
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -19,7 +18,7 @@ func GetPort() string {
 }
 
 func GetDBConnStr() string {
-	return fmt.Sprintf("postgres://%v:%v@localhost/%v?sslmode=disable", os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
+	return os.Getenv("DB_CONNECTION_STRING")
 }
 
 func GetJWTSecret() string {

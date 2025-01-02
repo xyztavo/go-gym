@@ -38,5 +38,6 @@ go run ./cmd/api
 - [x] seed with routines
 - [x] frontend (100% done)
 - [x] seed with also shoulder exercises
-- [ ] dockerfile the shit outta this app 
+- [x] dockerfile the shit outta this app 
+- [ ] integrate with github action deployment
 

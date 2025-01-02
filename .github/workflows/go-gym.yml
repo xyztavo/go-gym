@@ -1,0 +1,52 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy container app to Azure Web App - go-gym
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to container registry
+        uses: docker/login-action@v2
+        with:
+          registry: https://index.docker.io/v1/
+          username: ${{ secrets.DOCKER_LOGIN }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_c1208da7f5fb465880f9e38379192d9e }}/ustavo/go-gym:${{ github.sha }}
+          file: ./Dockerfile
+
+    deploy:
+      runs-on: ubuntu-latest
+      needs: build
+      environment:
+        name: 'Production'
+        url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+      steps:
+        - name: Deploy to Azure Web App
+          id: deploy-to-webapp
+          uses: azure/webapps-deploy@v2
+          with:
+            app-name: 'go-gym'
+            slot-name: 'Production'
+            publish-profile: ${{ secrets.AzureAppService_PublishProfile_bb0bc4fae38c40fdaf85e05d4ba9c2e9 }}
+            images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_c1208da7f5fb465880f9e38379192d9e }}/ustavo/go-gym:${{ github.sha }}'
