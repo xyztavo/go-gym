@@ -3,6 +3,7 @@ package configs
 import (
 	"log"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -39,4 +40,8 @@ func GetAdminInfo() *AdminUser {
 	adminUser.Password = os.Getenv("ADMIN_PASSWORD")
 
 	return adminUser
+}
+
+func GetAllowedOrigins() []string {
+	return strings.Split(os.Getenv("ALLOWED_ORIGINS"), ",")
 }

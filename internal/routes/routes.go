@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+	"github.com/xyztavo/go-gym/internal/configs"
 	"github.com/xyztavo/go-gym/internal/handlers"
 	"github.com/xyztavo/go-gym/internal/middlewares"
 )
@@ -10,7 +11,7 @@ import (
 func SetupRoutes() *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"https://*", "http://*"},
+		AllowedOrigins: configs.GetAllowedOrigins(),
 		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
