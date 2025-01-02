@@ -36,5 +36,7 @@ go run ./cmd/api
 - [x] seed with collections 
 - [x] do also a back and bi day collection and a leg day collection and a ABC routine in seed
 - [x] seed with routines
-- [ ] frontend (80% done)
+- [x] frontend (100% done)
+- [x] seed with also shoulder exercises
+- [ ] dockerfile the shit outta this app 
 

@@ -46,7 +46,7 @@ func Seed() error {
 	if err != nil {
 		return err
 	}
-	_, err = db.Exec("INSERT INTO exercises_reps_collections (id, admin_id, collection_id, exercise_id, reps, sets) VALUES ('0001', $1, '0001', '0001', 12, 3), ('0002', $1, '0001', '0002', 12, 3), ('0003', $1, '0001', '0003', 12, 3), ('0004', $1, '0001', '0006', 12, 3), ('0005', $1, '0001', '0007', 12, 3), ('0006', $1, '0001', '0008', 12, 3), ('0007', $1, '0001', '0009', 12, 3), ('0008', $1, '0002', '0004', 12, 3), ('0009', $1, '0002', '0005', 12, 3), ('0010', $1, '0002', '0010', 12, 3), ('0011', $1, '0002', '0011', 12, 3), ('0012', $1, '0002', '0012', 12, 3), ('0013', $1, '0002', '0013', 12, 3), ('0014', $1, '0002', '0014', 12, 3), ('0021', $1, '0003', '0015', 12, 3), ('0022', $1, '0003', '0016', 12, 3), ('0023', $1, '0003', '0017', 12, 3), ('0024', $1, '0003', '0018', 12, 3), ('0025', $1, '0003', '0019', 12, 3), ('0026', $1, '0003', '0020', 12, 3),  ('0027', $1, '0003', '0021', 12, 3)", adminId)
+	_, err = db.Exec("INSERT INTO exercises_reps_collections (id, admin_id, collection_id, exercise_id, reps, sets) VALUES ('0001', $1, '0001', '0001', 12, 3), ('0002', $1, '0001', '0002', 12, 3), ('0003', $1, '0001', '0003', 12, 3), ('0004', $1, '0001', '0006', 12, 3), ('0005', $1, '0001', '0007', 12, 3), ('0006', $1, '0001', '0008', 12, 3), ('0007', $1, '0001', '0009', 12, 3), ('0008', $1, '0002', '0004', 12, 3), ('0009', $1, '0002', '0005', 12, 3), ('0010', $1, '0002', '0010', 12, 3), ('0011', $1, '0002', '0011', 12, 3), ('0012', $1, '0002', '0012', 12, 3), ('0013', $1, '0002', '0013', 12, 3), ('0014', $1, '0002', '0014', 12, 3), ('0021', $1, '0003', '0015', 12, 3), ('0022', $1, '0003', '0016', 12, 3), ('0023', $1, '0003', '0017', 12, 3), ('0024', $1, '0003', '0018', 12, 3), ('0025', $1, '0003', '0019', 12, 3), ('0026', $1, '0003', '0020', 12, 3), ('0027', $1, '0003', '0021', 12, 3), ('0028', $1, '0001', '0022', 12, 3), ('0029', $1, '0002', '0023', 12, 3)", adminId)
 	if err != nil {
 		return err
 	}
@@ -188,6 +188,18 @@ func SeedExercises() []models.Exercise {
 			Name:        "Crunch",
 			Description: "Strengthens abs. Lie on your back, bend knees, and lift your shoulders towards your knees.",
 			Gif:         "https://fitnessprogramer.com/wp-content/uploads/2015/11/Crunch.gif",
+		},
+		{
+			Id:          "0022",
+			Name:        "Leaning Cable Lateral Raise",
+			Description: "Targets shoulders. Use a cable machine, lean away, and raise the handle to shoulder height.",
+			Gif:         "https://fitnessprogramer.com/wp-content/uploads/2021/09/Leaning-Cable-Lateral-Raise.gif",
+		},
+		{
+			Id:          "0023",
+			Name:        "Standing Dumbbell Overhead Press",
+			Description: "Strengthens shoulders and triceps. Stand, press dumbbells overhead, and lower slowly.",
+			Gif:         "https://fitnessprogramer.com/wp-content/uploads/2023/09/Standing-Dumbbell-Overhead-Press.gif",
 		},
 	}
 }
