@@ -31,7 +31,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_c1208da7f5fb465880f9e38379192d9e }}/ustavo/go-gym:${{ github.sha }}
+          tags: index.docker.io/ustavo/go-gym:${{ github.sha }}
           file: ./Dockerfile
 
   deploy:
@@ -49,4 +49,4 @@ jobs:
             app-name: 'go-gym'
             slot-name: 'Production'
             publish-profile: ${{ secrets.AzureAppService_PublishProfile_bb0bc4fae38c40fdaf85e05d4ba9c2e9 }}
-            images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_c1208da7f5fb465880f9e38379192d9e }}/ustavo/go-gym:${{ github.sha }}'
+            images: 'index.docker.io/ustavo/go-gym:${{ github.sha }}'
