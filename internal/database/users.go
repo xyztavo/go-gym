@@ -23,7 +23,7 @@ func CreateUser(user *models.CreateUser) (id string, statuscode int, err error) 
 		}
 		return "", http.StatusInternalServerError, err
 	}
-	return "", http.StatusCreated, nil
+	return id, http.StatusCreated, nil
 }
 
 func GetUserByEmail(email string) (user models.User, err error) {

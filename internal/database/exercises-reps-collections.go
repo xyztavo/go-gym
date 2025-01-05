@@ -120,3 +120,15 @@ func DeleteExercisesRepsCollection(adminId string, id string) error {
 	}
 	return nil
 }
+
+func UpdateExercisesRepsCollection(adminId string, id string, exerciseRepsCollection *models.UpdateExercisesRepsCollection) error {
+	exerciseRepsCollectionById, err := GetExercisesRepsCollectionById(id)
+	if err != nil {
+		return err
+	}
+	if exerciseRepsCollectionById.AdminId != adminId {
+		return errors.New("user is not the collection admin")
+	}
+	_, err = db.Exec("UPDATE exercises_reps_collections SET reps = $1, sets = $2 WHERE id = $3", exerciseRepsCollection.Reps, exerciseRepsCollection.Sets, id)
+	return err
+}

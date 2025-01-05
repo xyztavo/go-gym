@@ -78,3 +78,18 @@ func DeleteExercisesRepsCollection(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func UpdateExercisesRepsCollection(w http.ResponseWriter, r *http.Request) {
+	body := new(models.UpdateExercisesRepsCollection)
+	if err := utils.BindAndValidate(r, body); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	idFromToken := utils.UserIdFromToken(r)
+	id := chi.URLParam(r, "id")
+	if err := database.UpdateExercisesRepsCollection(idFromToken, id, body); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
