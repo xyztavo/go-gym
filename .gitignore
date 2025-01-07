@@ -1,3 +1,5 @@
-.env.prod
+## env
+.env
 
+## executables
 *.exe

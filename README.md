@@ -1,4 +1,5 @@
 ## Usage
+### rename [.env.example](.env.example) to .env
 install dependencies
 ``` bash
 go mod tidy
