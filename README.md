@@ -25,5 +25,6 @@ go run ./cmd/api
 ### Todos
 [See older commits to view what has been done so far](https://github.com/xyztavo/go-gym/commits/main)
 
-- [ ] seed also with arnold split and bros plit 
+- [x] seed also with arnold split 
+- [ ] seed also with and bro split 
 
