@@ -1,5 +1,4 @@
-## Usage
-### rename [.env.example](.env.example) to .env
+## Usage for Dev 
 install dependencies
 ``` bash
 go mod tidy
@@ -20,6 +19,8 @@ run the server
 ```bash
 go run ./cmd/api
 ```
+## Production
+this project has a [Dockerfile](./Dockerfile), it only spins up the GO API, but you can use external database solutions (like the [neon serverless postgres](https://neon.tech) or even vercel db)
 ## <a href="./internal/routes/routes.go">Routes</a>
 
 ### Todos
