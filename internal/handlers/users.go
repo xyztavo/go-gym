@@ -29,7 +29,11 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 func GetUserGym(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	gym, err := database.GetUserGym(idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -70,7 +74,11 @@ func SetUserGymAdminByEmail(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetGymUsers(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	gym, err := database.GetUserGym(idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
@@ -86,7 +94,11 @@ func GetGymUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func CheckIn(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	daysUntilPlanExpires, err := database.CheckIn(idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -116,7 +128,11 @@ func CheckInByUserId(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserPlanDetails(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	userPlanDetails, err := database.GetUserPlanDetails(idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

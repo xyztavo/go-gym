@@ -16,7 +16,11 @@ func CreateGym(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	userIdFromToken := utils.UserIdFromToken(r)
+	userIdFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	createdGymId, status, err := database.CreateGym(userIdFromToken, createGymBody)
 	if err != nil {
 		http.Error(w, err.Error(), status)
@@ -32,7 +36,11 @@ func CreateGym(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetGymUser(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	setGymUser := new(models.SetGymUser)
 	if err := utils.BindAndValidate(r, setGymUser); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -50,7 +58,11 @@ func SetGymUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetGymUserByEmail(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	setGymUser := new(models.SetGymUserByEmail)
 	if err := utils.BindAndValidate(r, setGymUser); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -68,7 +80,11 @@ func SetGymUserByEmail(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserGymDetails(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	gymDetails, err := database.GetUserGymDetails(idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -79,7 +95,11 @@ func GetUserGymDetails(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateGym(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	updateGymBody := new(models.UpdateGym)
 	if err := utils.BindAndValidate(r, updateGymBody); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

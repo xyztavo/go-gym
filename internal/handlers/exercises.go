@@ -12,7 +12,11 @@ import (
 )
 
 func CreateExercise(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	newExercise := new(models.CreateExercise)
 	if err := utils.BindAndValidate(r, newExercise); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -55,7 +59,11 @@ func GetExercises(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserExercises(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	exercises, err := database.GetUserExercises(idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -77,14 +85,18 @@ func GetExerciseById(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateExercise(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	id := chi.URLParam(r, "id")
 	newExercise := new(models.UpdateExercise)
 	if err := utils.BindAndValidate(r, newExercise); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err := database.UpdateExercise(idFromToken, id, newExercise)
+	err = database.UpdateExercise(idFromToken, id, newExercise)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -97,9 +109,13 @@ func UpdateExercise(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteExercise(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	id := chi.URLParam(r, "id")
-	err := database.DeleteExercise(idFromToken, id)
+	err = database.DeleteExercise(idFromToken, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -10,9 +10,13 @@ import (
 )
 
 func CreateGymRoutine(w http.ResponseWriter, r *http.Request) {
-	id := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	routineId := chi.URLParam(r, "id")
-	user, err := database.GetUserById(id)
+	user, err := database.GetUserById(idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -32,8 +36,12 @@ func CreateGymRoutine(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserGymRoutines(w http.ResponseWriter, r *http.Request) {
-	id := utils.UserIdFromToken(r)
-	user, err := database.GetUserById(id)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	user, err := database.GetUserById(idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -52,8 +60,13 @@ func GetUserGymRoutines(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteGymRoutine(w http.ResponseWriter, r *http.Request) {
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	id := chi.URLParam(r, "id")
-	err := database.DeleteGymRoutine(id)
+	err = database.DeleteGymRoutine(idFromToken, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

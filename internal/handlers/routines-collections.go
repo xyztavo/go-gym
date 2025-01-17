@@ -12,7 +12,11 @@ import (
 func CreateRoutineCollection(w http.ResponseWriter, r *http.Request) {
 	routineId := chi.URLParam(r, "routineId")
 	collectionId := chi.URLParam(r, "collectionId")
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	createdRoutineExerciseRepsCollectionId, err := database.CreateRoutineCollection(idFromToken, routineId, collectionId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -30,8 +34,12 @@ func CreateRoutineCollection(w http.ResponseWriter, r *http.Request) {
 func DeleteRoutineFromCollection(w http.ResponseWriter, r *http.Request) {
 	routineId := chi.URLParam(r, "routineId")
 	routineCollectionId := chi.URLParam(r, "routineCollectionId")
-	idFromToken := utils.UserIdFromToken(r)
-	err := database.DeleteRoutineFromCollection(idFromToken, routineId, routineCollectionId)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	err = database.DeleteRoutineFromCollection(idFromToken, routineId, routineCollectionId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

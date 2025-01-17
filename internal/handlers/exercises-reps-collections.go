@@ -16,7 +16,11 @@ func CreateExercisesRepsCollection(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	createdRoutineCollectionRoutineId, err := database.CreateExercisesRepCollection(idFromToken, exerciseRepsCollectionBody)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -37,7 +41,11 @@ func CreateMultipleExercisesRepCollection(w http.ResponseWriter, r *http.Request
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	if err := database.CreateMultipleExercisesRepCollection(idFromToken, body); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -70,7 +78,11 @@ func GetExercisesRepsCollectionsByCollectionId(w http.ResponseWriter, r *http.Re
 }
 
 func DeleteExercisesRepsCollection(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	id := chi.URLParam(r, "id")
 	if err := database.DeleteExercisesRepsCollection(idFromToken, id); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -85,7 +97,11 @@ func UpdateExercisesRepsCollection(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	id := chi.URLParam(r, "id")
 	if err := database.UpdateExercisesRepsCollection(idFromToken, id, body); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

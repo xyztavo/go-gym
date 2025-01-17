@@ -11,7 +11,11 @@ import (
 )
 
 func CreatePlan(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	planBody := new(models.CreatePlan)
 	if err := utils.BindAndValidate(r, planBody); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -49,7 +53,11 @@ func GetPlanById(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserGymPlans(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	gym, err := database.GetUserGym(idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
@@ -80,14 +88,18 @@ func SetUserPlan(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdatePlan(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	planId := chi.URLParam(r, "id")
 	planBody := new(models.UpdatePlan)
 	if err := utils.BindAndValidate(r, planBody); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err := database.UpdatePlan(planId, idFromToken, planBody)
+	err = database.UpdatePlan(planId, idFromToken, planBody)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -98,9 +110,13 @@ func UpdatePlan(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteGymPlan(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	planId := chi.URLParam(r, "id")
-	err := database.DeleteGymPlan(planId, idFromToken)
+	err = database.DeleteGymPlan(planId, idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

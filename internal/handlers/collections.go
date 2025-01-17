@@ -12,7 +12,11 @@ import (
 )
 
 func CreateCollection(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	createRoutineColletionBody := new(models.CreateCollection)
 	if err := utils.BindAndValidate(r, createRoutineColletionBody); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -57,7 +61,11 @@ func GetCollections(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAdminCollections(w http.ResponseWriter, r *http.Request) {
-	id := utils.UserIdFromToken(r)
+	id, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	routinesCollections, err := database.GetAdminCollections(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -90,14 +98,18 @@ func GetCollectionById(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateCollection(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	collectionId := chi.URLParam(r, "id")
 	collectionBody := new(models.UpdateCollection)
 	if err := utils.BindAndValidate(r, collectionBody); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err := database.UpdateCollection(idFromToken, collectionId, collectionBody)
+	err = database.UpdateCollection(idFromToken, collectionId, collectionBody)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -108,9 +120,13 @@ func UpdateCollection(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteCollection(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	collectionId := chi.URLParam(r, "id")
-	err := database.DeleteCollection(idFromToken, collectionId)
+	err = database.DeleteCollection(idFromToken, collectionId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -17,7 +17,11 @@ func CreateRoutine(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	createdRoutineBodyId, err := database.CreateRoutine(idFromToken, createRoutineBody)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -57,8 +61,12 @@ func GetRoutines(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserRoutines(w http.ResponseWriter, r *http.Request) {
-	id := utils.UserIdFromToken(r)
-	routines, err := database.GetUserRoutines(id)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	routines, err := database.GetUserRoutines(idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -78,14 +86,18 @@ func GetRoutineById(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 func UpdateRoutine(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	routineId := chi.URLParam(r, "id")
 	routineBody := new(models.UpdateRoutine)
 	if err := utils.BindAndValidate(r, routineBody); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err := database.UpdateRoutine(routineId, idFromToken, routineBody)
+	err = database.UpdateRoutine(routineId, idFromToken, routineBody)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -95,9 +107,13 @@ func UpdateRoutine(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 func DeleteRoutine(w http.ResponseWriter, r *http.Request) {
-	idFromToken := utils.UserIdFromToken(r)
+	idFromToken, err := utils.UserIdFromToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	routineId := chi.URLParam(r, "id")
-	err := database.DeleteRoutine(routineId, idFromToken)
+	err = database.DeleteRoutine(routineId, idFromToken)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

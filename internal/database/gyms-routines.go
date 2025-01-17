@@ -1,6 +1,8 @@
 package database
 
 import (
+	"errors"
+
 	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/xyztavo/go-gym/internal/models"
 )
@@ -33,7 +35,18 @@ func GetGymRoutines(gymId string) (gymRoutines []models.Routine, err error) {
 	return gymRoutines, nil
 }
 
-func DeleteGymRoutine(id string) (err error) {
+func DeleteGymRoutine(adminId string, id string) (err error) {
+	admin, err := GetUserById(adminId)
+	if err != nil {
+		return err
+	}
+	gym, err := GetGymById(*admin.GymId)
+	if err != nil {
+		return err
+	}
+	if gym.AdminId != adminId {
+		return errors.New("user is not the admin of the gym")
+	}
 	_, err = db.Exec("DELETE FROM gyms_routines WHERE id = $1", id)
 	return err
 }
